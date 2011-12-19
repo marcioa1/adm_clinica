@@ -1,0 +1,34 @@
+<% content_for :main do %>
+<fieldset>
+<legend>Editando forma de recebimento</legend>
+
+<% form_for(@formas_recebimento) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :nome %><br />
+    <%= f.text_field :nome %>
+  </p>
+  <p>
+    <%= f.label :tipo %><br />
+     <%= f.select :tipo, [['Outros', 'O'], ['Cheque', 'C'], ['Dinheiro', 'D']] %>
+  </p>
+
+  <% if @current_user.master? %>
+    <p>
+      <%= f.check_box :ativo %>
+      <%= f.label :ativo %>
+    </p>
+  <% else %>
+    <p>
+      Ativo :  <%= sim_nao(@formas_recebimento.ativo) %>
+    </p>
+  <% end %>
+  <p>
+    <%= f.submit 'alterar' %>
+  </p>
+<% end %>
+<%= link_to 'voltar', formas_recebimentos_path %>
+</fieldset>
+
+<% end %>

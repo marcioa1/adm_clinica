@@ -1,0 +1,28 @@
+<% content_for :main do %>
+<fieldset>
+<legend>Novo débito</legend>
+
+<% form_for(@debito) do |f| %>
+  <%= f.error_messages %>
+
+    <%= f.hidden_field :paciente_id %>
+  <div>
+    <%= f.label :data %> :
+  	<%= f.text_field :data_br, :size=>10, :class=>'datepicker txt' %>
+  </div>
+  <div>
+    <%= f.label :valor %> :
+    <%= f.text_field :valor_real, :size=>12, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :descrição %> :
+    <%= f.text_field :descricao, html_options={:size=>30, :class=>'txt' }%>
+  </div>
+  <div>
+    <%= f.submit 'salvar' if current_user.secretaria? %>&nbsp;&nbsp;<%= link_to 'voltar', :back %>
+  </div>
+<% end %>
+
+
+</fieldset>
+<% end %>

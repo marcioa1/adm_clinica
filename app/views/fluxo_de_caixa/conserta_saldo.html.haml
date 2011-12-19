@@ -1,0 +1,23 @@
+- content_for :main do
+  %h4
+    Conserta saldo
+  - form_tag grava_saldo_path do
+    Clínica :
+    = select_tag :clinica, options_for_select(@clinicas), :onchange=>"busca_saldo();"
+    %p
+      = label_tag :Data
+      = ' :'
+      %span{:id => :data}
+    %p
+      = label_tag :Saldo_em_dinheiro
+      = ' :'
+      = text_field_tag :saldo_em_dinheiro
+    %p
+      = label_tag :Saldo_em_cheque
+      = ' :'
+      = text_field_tag :saldo_em_cheque
+ 
+    %p
+      = submit_tag :salvar
+  :javascript
+    $(document).ready(function(){busca_saldo();});

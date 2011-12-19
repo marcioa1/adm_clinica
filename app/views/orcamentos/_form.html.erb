@@ -1,0 +1,59 @@
+  <%= javascript_include_tag 'jquery.price_format.1.0.js' %>
+
+<div>
+  <%= f.hidden_field :paciente_id  %>
+  <%= hidden_field_tag :tratamento_ids , params[:tratamento_ids]%>
+</div>
+<div>
+  <%= f.label :numero %> :
+  <%= f.text_field :numero,:disabled=>false, :size=>4 %>
+</div>
+<div>
+  <%= f.label :data %> :
+  <%= f.text_field :data_pt,  :size=>10 %>
+</div>
+<div>
+  <%= f.label :dentista %> :
+  <%= f.select :dentista_id, @dentistas %>
+</div>
+<div>
+  <%= f.label :valor %>:
+  <%= f.text_field :valor_pt, :size=>8 %>
+</div>
+<div>
+  <%= f.label :desconto %>:
+  <%= f.text_field :desconto, :size=>4, :onblur=>'calcula_valor_orcamento();' %> %
+</div>
+<div><%= f.label :valor_com_desconto %>:
+  <%= f.text_field :valor_com_desconto_pt, :size=>8 %>
+</div>
+</p>
+<div>
+  <%= f.label :forma_de_pagamento %> : 
+  <%= f.radio_button :forma_de_pagamento,  "cheque pre" %> Cheque pré
+  <%= f.radio_button :forma_de_pagamento, "a vista" %>À vista
+  <%= f.radio_button :forma_de_pagamento, "cartao" %> Cartão
+</div>
+<div>
+  <%= f.label :data_de_inicio %>: 
+  <%= text_field_tag "orcamento[data_de_inicio]", @orcamento.data_de_inicio.to_s_br, :class=> 'datepicker',  :size=>10 , :on_change => "alert('trocou');"%>
+</div>
+<div>
+  <%= f.label :número_de_parcelas %> :
+  <%= f.select :numero_de_parcelas, options_for_select( [['1',1],['2',2],['3',3],['4',4],['5',5],[ '6',6],['7',7],['8',8],['9',9],['10',10]],@orcamento.numero_de_parcelas), {}, html_options={ :onchange=>'calcula_valor_da_parcela();'} %>
+</div>
+<div>
+  <%= f.label :vencto_primeira_parcela %> :
+  <%= text_field_tag "orcamento[vencimento_primeira_parcela]", @orcamento.vencimento_primeira_parcela.to_s_br, options = {:size=>10, :class=>'datepicker', :onchange => 'calcula_valor_da_parcela();'} %>
+</div>  
+<div>
+  <%= f.label :valor_da_parcela %> :
+  <%= f.text_field :valor_da_parcela_pt, :size=>8 %>  
+</div>
+<div id='parcelas'></div>
+<div>
+  <%= f.submit 'salvar' if current_user.secretaria? %>
+</div>
+<script type='text/javascript'>
+  $(calcula_valor_da_parcela());
+</script>

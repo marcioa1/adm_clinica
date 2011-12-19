@@ -1,0 +1,34 @@
+#disponiveis
+  %fieldset.fieldset_40
+    %legend
+      Cheques disponíveis
+    = button_to "pesquisar", "javascript:pesquisa_disponiveis();" 
+    %br
+    %span#lista_de_cheques
+#selecionados
+  %fieldset.fieldset_40
+    %legend Cheques utilizados
+    %table{:class=>'tabela'}
+      %thead
+        %tr
+          - if @clinica_atual.administracao?
+            %th Clínica
+          %th Bom para
+          %th{:width=>"200px"} Paciente
+          %th{:width=>"80px"} Banco
+          %th Agência
+          %th Número
+          %th{:width=>"80px"} Valor
+          %th &nbsp;
+      %tbody
+      - pagamento.cheques.each do |cheque|
+        %tr{:id=>"tr2_"+ cheque.id.to_s}
+          - if @clinica_atual.administracao?
+            %td= cheque.clinica.sigla
+          %td= cheque.bom_para.to_s_br
+          %td= cheque.nome_dos_pacientes
+          %td= cheque.banco.nome if cheque.banco
+          %td= cheque.agencia
+          %td= cheque.numero
+          %td{:align=>'right', :id=>'valor_' + cheque.id.to_s}= cheque.valor.real
+          %td= check_box_tag "cheque_#{cheque.id}", false ,false ,options={ :onclick=>"selecionou_cheque(#{cheque.id})"}

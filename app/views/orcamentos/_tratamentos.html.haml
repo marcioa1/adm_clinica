@@ -1,0 +1,14 @@
+%table{:class=>'tabela'}
+  %tr
+    %th= 'Dente'
+    %th= 'Faces'
+    %th= 'Descrição'
+    %th= 'Valor'
+    %th= 'Custos'
+  - tratamentos.each do |trat|
+    %tr
+      %td= trat.dente
+      %td= trat.faces
+      %td= trat.descricao
+      %td{:align=>:right}= trat.valor.real
+      %td{:align=>:right}= trat.custo.real

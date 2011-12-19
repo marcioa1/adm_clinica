@@ -1,0 +1,200 @@
+<% content_for :main do %>
+  <%= render :partial => '/layouts/include_senha' %>
+
+  <h3>Cheques recebidos</h3>
+  <%= @cheques.size %> Cheques recebidos
+<% form_tag cheques_recebidos_cheques_path do %>
+  <% if @clinica_atual.administracao? %>
+    <p><%= render :partial =>'clinicas/opcoes', :locals => {:clinicas => @clinicas} %></p>
+  <% end %>
+  <p>
+    <%= label_tag :data_inicial %> : <%= text_field_tag :datepicker, @data_inicial.to_s_br, :size=>10 %>
+
+    <%= label_tag :data_final %> : <%= text_field_tag :datepicker2, @data_final.to_s_br, :size=>10  %>
+    <%= label_tag :situação %> : 
+    <%= select_tag :status, options_for_select(@status, params[:status]) %>
+    <%= radio_button_tag :ordem, :bom_para , params[:ordem]%>
+    <%= label_tag :por_data%>
+    <%= radio_button_tag :ordem, :valor , params[:ordem]  %>
+    <%= label_tag :por_valor %>
+    <%= submit_tag "pesquisar"%>  
+  </p>
+<% end %>
+<br/>
+<% dados = "#{@titulo};>Clínica;Bom para;Paciente;Banco;Número;Valor;Estado>center;center;left;left;left;right;>" %>
+
+<table id='table' class='tabela'>
+  <tr>
+    <% if @clinica_atual.administracao? %>
+      <th>Clínica</th>
+    <% end %>
+    <th>Bom para</th>
+    <th width="230px">Paciente</th>
+    <th width="100px">Banco</th>
+    <th>Agência</th>
+    <th>Número</th>
+    <th width="60px">Valor</th>
+    <th>Adm</th>
+    <th width='120px'>Situação</th>
+    <th>Data recebimento</th>
+    <% if params[:status] == 'disponíveis'%>
+      <th>Destino</th>
+    <% else %>
+      <th>Histórico</th>
+    <% end %>
+    <th>&nbsp;</th>
+  </tr>
+  <% total = 0 %>
+  <% for cheque in @cheques do %>
+    <tr class=<%=cheque.status_class%> id="tr_<%=cheque.id%>">
+    <% if @clinica_atual.administracao? %>
+      <% dados += "#{cheque.clinica.sigla};#{cheque.bom_para.to_s_br};#{cheque.nome_dos_pacientes};#{cheque.banco && cheque.banco.numero};#{cheque.numero}; #{cheque.valor.real};#{cheque.status}>" %>
+      <td><%= cheque.clinica.sigla %></td>
+    <% else %>
+      <% dados += "#{cheque.clinica.sigla};#{cheque.bom_para.to_s_br};#{cheque.nome_dos_pacientes} ;#{cheque.banco && cheque.banco.nome};#{cheque.numero};#{cheque.valor.real};#{cheque.nome_do_destino}>" %>
+
+    <% end %>
+    <td align="center">
+      <%= cheque.bom_para.to_s_br %>
+    </td>
+    <td><%= cheque.nome_dos_pacientes %></td>
+    <td align="center"><%= cheque.banco.numero.to_s + "-"+ cheque.banco.nome unless cheque.banco.nil? %></td>
+    <td><%= cheque.agencia  %></td>
+    
+    <td><%= cheque.numero %></td>
+    <td align="right"><%= cheque.valor.real %></td>
+    <% if @clinica_atual.administracao? %>
+      <td id="adm_<%= cheque.id%>">
+         <% if cheque.entregue_a_administracao? %>
+           <%= link_to "Receber",  "javascript:confirma_recebimento_de_cheque(#{cheque.id})"%>
+         <% else %>
+          <%= cheque.data_recebimento_na_administracao.to_s_br %>
+         <% end %>
+      </td>
+    <% else %>
+      <td align='center'>
+        <% if cheque.entregue_a_administracao?  %>
+          <%= image_tag "ok.png" %>
+          <%= cheque.data_entrega_administracao.to_s_br %>
+        <% elsif cheque.recebido_pela_clinica? %>
+          <%= link_to_function "retorna à administração",  "enviar_de_volta_a_administracao(#{cheque.id})" %>
+        <% elsif cheque.disponivel? %>
+           <%= check_box_tag "adm_"+cheque.id.to_s %>
+        <% end %>
+      </td>
+    <% end %>
+    <td id="td_<%= cheque.id%>"><%= status = case 
+        when cheque.status=~/usado pgto/ then
+          if !@clinica_atual.administracao?
+            "usado p/ pagamento, #{cheque.pagamento.tipo_pagamento.nome}"
+          else
+            link_to cheque.pagamento.tipo_pagamento.nome, '#', :onclick=>'javascript:abre_pagamento('+ cheque.pagamento_id.to_s + ')' 
+            if cheque.bom_para > cheque.pagamento.data_de_pagamento && current_user.login == 'fabiana'
+              link_to "tornar disponivel", "#", :onclick=>'javascript:tornar_disponivel('+ cheque.id.to_s + ')'
+            else
+            link_to cheque.pagamento.tipo_pagamento.nome, "#", :onclick=>'javascript:abre_pagamento('+ cheque.pagamento_id.to_s + ')' 
+            end
+          end
+        when cheque.status=~/destinação/ then
+           cheque.destinacao.nome
+        when cheque.arquivo_morto? then
+          "arquivo morto em #{cheque.data_arquivo_morto.to_s_br}"
+        when cheque.entregue_a_administracao? then 
+           link_to 'reverter', '#', :onclick=>"javascript:reverte_cheque(#{cheque.id})"
+        when cheque.recebido_pela_clinica?
+          "Recebido em #{cheque.data_recebido_da_administracao.to_s_br}"
+        when cheque.devolvido_a_clinica? then 
+          if @clinica_atual.administracao?
+            "enviado à clínica em #{cheque.data_envio_a_clinica.to_s_br}"
+          else
+            link_to "enviado à clínica em #{cheque.data_envio_a_clinica.to_s_br}. Receber", "javascript:recebe_cheque_devolvido(#{cheque.id});"
+          end
+        when cheque.recebido_pela_administracao? then
+          link_to 'devolver à clínica', "javascript:devolve_cheque_a_clinica(#{cheque.id})" if @clinica_atual.administracao?
+       else cheque.status_resumido
+    end %>
+  
+    </td>
+    <td align='center'><%= cheque.data_recebimento_na_administracao.to_s_br %></td>
+    <% if params[:status] == 'disponíveis'%>
+      <td>    <%= select_tag :destinacao_id,  options_for_select(@destinacoes), :id=>"destinacao_#{cheque.id}" %> <%= button_to_function "gravar", "grava_destinacao(#{cheque.id})"%></td>
+    <% else %>
+        <td><%= cheque.historico %></td>
+    <% end %>
+
+    <td><%= link_to 'alterar', edit_cheque_path(cheque), :class=>'ui-icon ui-icon-pencil' , :title=>'alterar'  if cheque.pode_alterar?(current_user)%></td>
+
+  </tr>
+  <% total += cheque.valor %>
+  <% end %>
+  <tr>
+    <% if @clinica_atual.administracao? %>
+      <td colspan="6" align="center">Total</td>
+      <td align="right"><%= total.real%></td>
+      <td colspan="3" align="right">&nbsp;</td>
+      <td><% if params[:status] == 'enviados à administração' %>
+            <%= link_to_function "receber cheques", 'confirma_recebimento_de_cheque()' %>
+          <% end %>
+      </td>
+      <td colspan="4">&nbsp;</td>
+    <% else %>
+      <td colspan="5" align="center">Total</td>
+      <td align="right"><%= total.real%></td>
+      <td colspan="6" align="right"><%= link_to_function "enviar cheques selecionados p/ administração" , "enviar_administracao();"  if params[:status]=="disponíveis" && !@clinica_atual.administracao? && @classident %></td>
+    <% end %>
+    
+  </tr>
+  <% dados += ";;Total :;;;#{total.real.to_s}; ;>"%>
+</table>
+  <%= link_de_impressao(dados, session[:clinica_id], 'landscape') %>
+</div>
+<script type="text/javascript">
+  function reverte_cheque(id){
+     $.ajax({
+     url : "/cheques/"+ id + "/reverte_cheque",
+     type: 'POST',
+     success: function(){
+       $("#tr_" + id).remove();
+       }
+    });
+  }
+  function grava_destinacao(id){
+    $.ajax({
+      url: "/cheques/" + id + "/grava_destinacao",
+      data: { destinacao_id: $("#destinacao_"+id).val() },
+      type: 'GET',
+      success: function(){
+        $("#tr_"+id).remove();
+      }
+      
+    });
+  }
+
+  function tornar_disponivel(id){
+    if (confirm("Tem certeza de que quer tornar este cheque disponível ?")){
+      $.ajax({
+        url: "/cheques/" + id + "/tornar_disponivel",
+        type: 'GET',
+        success: function(){
+          $("#tr_"+id).remove();
+        }
+      
+      });
+    }
+  }
+
+  function enviar_de_volta_a_administracao(id){
+    $.ajax({
+      url: "/cheques/" + id + "/envia_a_administracao",
+      type: 'GET',
+      success: function(){
+        $("#tr_"+id).remove();
+      }
+    
+    });
+  }
+
+
+</script>
+
+<% end %>

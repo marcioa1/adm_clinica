@@ -1,0 +1,33 @@
+- content_for :main do
+  %h3
+    Trabalhos entregues de protético e não pagos.
+  - form_tag :controller => :proteticos, :action=>:trabalhos_por_clinica do
+    Clinica :
+    = select_tag :clinica, options_for_select(@clinicas, params[:clinica]) , :onchange => "busca_proteticos_da_clinica();"
+    = select_tag :protetico, options_for_select(@proteticos, params[:protetico])
+    = hidden_field_tag :protetico_id, @protetico.id
+    = submit_tag :pesquisar
+  %p
+  %table
+    %tr
+      %th{:width=>'160px'}='Protético'
+      %th{:width=>'160px'}='Paciente'
+      %th{:width=>'60px'}='Dente'
+      %th{:width=>'160px'}='Trabalho'
+      %th{:width=>'60px'}='Valor'
+      %th='Data de devolução'
+      %th
+        &nbsp;
+    - @trabalhos.each do |trab|
+      %tr
+        %td=trab.protetico.nome
+        %td=trab.paciente && trab.paciente.nome
+        %td=trab.dente
+        %td=trab.tabela_protetico.descricao
+        %td{:align=>"right"}
+          %span{:id=>"valor_#{trab.id}"}=trab.valor.real
+        %td{:align=>"center"}=trab.data_de_devolucao_final.to_s_br
+        %td=check_box_tag "trabalho_id_#{trab.id}", '',:checked =>true
+    %tr
+      %td{:colspan=>6, :align=>'right'}
+        = link_to_function "Pagar selecionados","pagamento_protetico();"

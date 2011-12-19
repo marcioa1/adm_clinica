@@ -1,0 +1,23 @@
+<p><%= link_to "Nova alta", new_alta_path(:paciente_id=> @paciente.id)  if current_user.pode_alterar_na_clinica? unless @paciente.em_alta? %>
+</p>
+<table class='tabela'>
+  <tr>
+	<th>Data</th>
+	<th width="150px">Observação</th>
+	<th width="130px">Usuário</th>
+	<th>Término</th>
+	<th width="130px">Por</th>
+  </tr>
+
+<% @paciente.altas.each do |alta| %>
+  <tr>
+	<td><%= alta.data_inicio.to_s_br %></td>
+	<td><%= alta.observacao %></td>
+	<td><%= alta.user.login %></td>
+    <td><%= alta.data_termino.to_s_br unless alta.data_termino.nil? %></td>
+    <td><%= alta.user_termino.login unless alta.user_termino.nil? %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />

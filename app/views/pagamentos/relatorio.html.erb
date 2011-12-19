@@ -1,0 +1,160 @@
+<% content_for :main do %>
+  <%= render :partial => '/layouts/include_senha' %>
+
+<div id="link">
+  <%= link_to 'novo pagamento', new_pagamento_path if current_user.pode_alterar_na_clinica? %> 
+</div>
+<fieldset class='fieldset_40'>
+    <legend>Relatório de pagamentos</legend>
+<% form_tag relatorio_pagamentos_path do %>
+<table class="transparente">
+  <tr>
+	<td>
+  <table class="transparente">
+    <tr><td>Início : </td><td><%= text_field_tag :datepicker, @data_inicial.to_s_br, :size=>10 %> </td></tr>
+    <tr><td>Fim : </td><td><%= text_field_tag :datepicker2, @data_final.to_s_br, :size=>10 %></td></tr>
+    <% if !@clinica_atual.administracao? %>
+      <tr>
+        <td colspan='2'><%= check_box_tag :pela_adm, params[:pela_adm], params[:pela_adm] %> Incluir pagos pela Adm
+        </td>
+      </tr>
+    <% end %>
+      <tr>
+        <td colspan='2'><%= radio_button_tag :modo, 'todos', params[:modo] == 'todos' %> Todas </td>
+      </tr>
+      <tr>
+        <td colspan='2'><%= radio_button_tag :modo, 'dinheiro', params[:modo] == 'dinheiro' %> Dinheiro</td>
+      </tr>
+      <tr>
+        <td colspan='2'><%= radio_button_tag :modo, 'cheque paciente', params[:modo] == 'cheque paciente' %> Cheque de pacientes</td>
+      </tr>
+      <tr>
+        <td colspan='2'><%= radio_button_tag :modo, 'cheque classident', params[:modo] == 'cheque classident' %> Cheque da classident
+        <%= select_tag :conta_bancaria_id, options_for_select(@contas_bancarias, params[:conta_bancaria_id]) %>
+        </td>
+      </tr>
+    </table>
+    </td>
+    <td>
+     Tipos de pagamento : <br/>
+   <%= select_tag 'tipo_pagamento_id', options_for_select(@tipos_pagamento, params[:tipo_pagamento_id] ), :multiple=>true %>
+<a href="#" id="selecao" onclick="javascript:selecionar();">todos</a>   </td>
+<td>
+  Livro caixa :
+  <table>
+    <tr>
+      <td><%= radio_button_tag :livro_caixa, 'sim', params[:livro_caixa]== 'sim' %> sim</td>
+      <td><%= radio_button_tag :livro_caixa, 'não', params[:livro_caixa]=='não' %> não</td>
+      <td><%= radio_button_tag :livro_caixa, 'ambos', params[:livro_caixa]=='ambos' %> ambos</td>
+    </tr>
+  </table>
+</td>
+
+   </tr>
+   <tr><td>&nbsp;</td><td><%= submit_tag "pesquisar"%></td></tr>
+</table>
+  
+<% end %>
+</fieldset>
+<br/>
+<table id="tabela" class='tabela'>
+  <thead>
+  <tr>
+    <th>Tipo</th>
+    <th>Valor pago</th>
+    <th width="220px">Observação</th>
+    <th>Pago em</th>
+    <th>Terceiros</th>
+    <th>Dinheiro</th>
+    <th>Cheque</th>
+    <th>Modo pgto</th>
+    <th>Detalhes</th>
+    <th>Livro caixa</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+    <% if current_user.master? %>
+      <th>&nbsp;</th>
+    <% end %>      
+  </tr></thead>
+<% dados = "#{@titulo};>Pago em;Tipo;Valor;Observações;Terceiros;Dinheiro;Cheque;Detalhes>center;left;right;left;right;right;right;left>" %>
+<% total = 0 %>
+<% total_terceiros = 0 %>
+<% total_cheque = 0 %>
+<% total_dinheiro = 0 %>
+<tbody>
+<% @pagamentos.each do |pagamento| %>
+  <tr>
+    <td><%=h pagamento.tipo_pagamento.nome %></td>
+    <td align="right"><%=h pagamento.valor_pago.real %></td>
+    <td><%=h pagamento.observacao %></td>
+    <td align="center"><%=h pagamento.data_de_pagamento.to_s_br %></td>
+    <td align="right"><%= pagamento.valor_terceiros.real %></td>
+    <% dados += "#{pagamento.data_de_pagamento.to_s_br};#{pagamento.tipo_pagamento.nome};#{pagamento.valor_pago.real};#{pagamento.observacao};#{pagamento.valor_terceiros.real};"%>
+    <td align="right">
+      <% if pagamento.modo_de_pagamento.downcase == 'dinheiro' %>
+        <%= pagamento.valor_pago.real %>
+        <% dados += "#{pagamento.valor_pago.real};"%>
+      <% else %>
+        <% dados += "#{pagamento.valor_restante.real};"%>
+        <%= pagamento.valor_restante.real %>
+      <% end %>
+    </td>
+    <td align="right"><%= pagamento.valor_cheque.real %></td>
+    <td><%=h pagamento.modo_de_pagamento %></td>
+    <% dados += "#{pagamento.valor_cheque.real};"%>
+    <td>
+      <% if pagamento.em_cheque_classident? %>
+        <%= pagamento.conta_bancaria && pagamento.conta_bancaria.nome %>
+        <%= ' - '%>
+        <%= pagamento.numero_do_cheque %>
+        <% dados += "#{pagamento.numero_do_cheque};" %>
+      <% else %>
+        <% dados += " ;"%>
+      <% end %>
+      <% dados += '>'%>
+    </td>
+    <td align="center"><%=h pagamento.nao_lancar_no_livro_caixa ? "não" : "sim" %></td>
+    <td><%= link_to 'editar', edit_pagamento_path(pagamento), :class=>'ui-icon ui-icon-pencil', :title=>'editar', :target => 'blank' if pagamento.pode_alterar? %></td>
+    <td><%= link_to 'excluir', exclusao_pagamento_path(pagamento), :class=>'ui-icon ui-icon-trash', :title=>'excluir'  if pagamento.pode_alterar? || current_user.master? %></td>
+    <td><%= link_to 'mostrar', '#', :onclick=>'javascript:abre_pagamento('+ pagamento.id.to_s + ')' , :class=>'ui-icon ui-icon-info', :title=>'ver detalhes'%></td>
+    
+    <% if current_user.master? && !pagamento.na_quinzena? %>
+      <% if pagamento.liberado_para_alteracao? %>
+        <td><%= link_to "fechar", "/alteracoes/0/close?tabela=pagamentos&idregistro="+ pagamento.id.to_s,:class=>'ui-icon ui-icon-unlocked' %></td>
+      <% else %>
+        <td> <%= link_to "liberar", new_alteraco_path(:tabela => 'pagamentos', :id_registro => pagamento.id),:class=>'ui-icon ui-icon-locked' %> </td>
+      <% end %>
+    <% end %>
+    <% if current_user.master? && pagamento.na_quinzena? %>
+      <td> &nbsp; </td>
+    <% end %>
+
+    
+  </tr>
+  <% total += pagamento.valor_pago  %>
+  <% total_dinheiro += pagamento.valor_dinheiro %>
+  <% total_cheque += pagamento.valor_cheque %>
+  <% total_terceiros += pagamento.valor_terceiros %>
+<% end %>
+  </tbody>
+  <tr>
+  	<td align="center">Total</td>
+    <td align="right"><%= total.real %></td>
+    <td colspan="2">&nbsp;</td>
+    <td align="right"><%= total_terceiros.real %></td>
+    <td align="right"><%= total_dinheiro.real %></td>
+    <td align="right"><%= total_cheque.real %></td>
+    <td colspan="5">&nbsp;</td>
+  </tr>
+  <% dados += ";Total;#{total.real};;#{total_terceiros.real};#{total_dinheiro.real};#{total_cheque.real} ; >"%>
+</table>
+
+<br />
+
+<%= link_to 'novo pagamento', new_pagamento_path  if current_user.pode_alterar_na_clinica?%> |  
+  <%= link_de_impressao(dados, session[:clinica_id], 'portrait') %>
+  |
+  <%= link_to "impressão detalhada", impressao_detalhada_pagamentos_path(:pagamentos => @pagamentos.map(&:id).join(','),:data_inicial => @data_inicial, :data_final => @data_final) %>
+
+<% end %>

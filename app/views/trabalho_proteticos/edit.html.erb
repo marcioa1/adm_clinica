@@ -1,0 +1,73 @@
+<% content_for :main do %>
+<fieldset>
+<legend>Editando trabalho protético : <b><%= @paciente.nome %></b></legend>
+
+<% form_for(@trabalho_protetico) do |f| %>
+  <%= f.error_messages %>
+  <p>
+    <%= f.label :protetico_id %><br />
+    <%= f.select :protetico_id, @proteticos, {}, :onchange=>"escolheu_protetico();" %>
+  </p>
+  <p>
+    <%= f.label :dentista_id %><br />
+    <%= f.select :dentista_id, options_for_select(@dentistas, @trabalho_protetico.dentista_id) %>
+  </p>
+  <p>
+    <%= f.label :dente %><br />
+    <%= f.text_field :dente, :size=>10 %>
+  </p>
+  <p>
+    <%= f.label :data_de_envio %><br />
+    <%= f.text_field :data_envio_pt, :size=>10, :class=>'datepicker txt' %>
+  </p>
+  <p>
+    <%= f.label :data_prevista_de_devolução %><br />
+    <%= f.text_field :data_prevista_de_devolucao_pt, :size=>10, :class=>'datepicker txt' %>
+  </p>
+  <p>
+    <%= f.label :data_de_devolução %><br />
+    <%= f.text_field :data_de_devolucao_pt, :class=>'datepicker',  :size=>10 %>
+  </p>
+  <p>
+    <%= f.label :tabela_protetico_id %><br />
+    <%= f.select :tabela_protetico_id,@trabalho_protetico.protetico.tabela_proteticos.collect{|obj| [obj.descricao,obj.id]}.sort,{}, :onchange=>"escolheu_item_da_tabela();" %>
+  </p>
+  <p>
+    <%= f.label :valor %><br />
+    <%= f.text_field :valor_pt, :size=>8 %>
+  </p>
+  <p>
+    <%= f.label :cor %><br />
+    <%= f.text_field :cor, :size=>8 %>
+  </p>
+  <p>
+   	<%= f.label :observações %><br />
+    <%= f.text_area :observacoes, :rows=>3, :columns=>50 %>
+  </p>
+<fieldset class='fieldset_20'><legend> Repetição </legend>
+  <p>
+    <%= f.label :data_de_repetição %><br />
+    <%= f.text_field :data_de_repeticao_pt, :class => 'datepicker', :size=>10 %>
+  </p>
+  <p>
+    <%= f.label :motivo_da_repetição %><br />
+    <%= f.text_field :motivo_da_repeticao %>
+  </p>
+  <p>
+    <%= f.label :data_prevista_da_devolução_da_repetição %><br />
+    <%= f.text_field :data_prevista_da_devolucao_da_repeticao_pt, :class => 'datepicker', :size=>10 %>
+  </p>
+  <p>
+    <%= f.label :data_de_devolução_da_repetição %><br />
+    <%= f.text_field :data_de_devolucao_da_repeticao_pt, :class => 'datepicker', :size=>10 %>
+  </p>
+
+</fieldset>
+  <p>
+    <%= f.submit 'Salvar' if current_user.secretaria? %>
+  </p>
+  
+<% end %>
+<%= link_to 'voltar', abre_paciente_path(@trabalho_protetico.paciente) %>
+</fieldset>
+<% end %>

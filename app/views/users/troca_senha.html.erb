@@ -1,0 +1,23 @@
+<% content_for :main do %>
+<fieldset>
+<legend>Troca de senha</legend>
+
+<% form_tag(:controller => 'users', :action=>'salva_nova_senha') do |f| %>
+  <%= hidden_field_tag :id, @user.id %>
+  <br/>  
+  <table class='transparente'>
+    <tr>
+      <td><%= label_tag :nova_senha %> :</td>
+      <td><%= password_field_tag :password, "", :size=>8 %></td>
+    </tr>
+    <tr>
+      <td><%= label_tag :confirmação_da_senha %> :</td>
+      <td><%= password_field_tag :password_confirmation,'', :size=>8 %></td>
+    </tr>
+  </table>
+   
+  <br/>
+  <%= submit_tag "Salvar" %>
+<% end %>
+</fieldset>
+<% end %>

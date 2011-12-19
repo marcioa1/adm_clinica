@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  clinica_id: 1
+  item_tabela_id: 1
+  preco: 12
+
+two:
+  clinica_id: 2
+  item_tabela_id: 1
+  preco: 14.5

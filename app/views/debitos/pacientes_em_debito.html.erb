@@ -1,0 +1,55 @@
+<% content_for :main do %>
+  <%= render :partial => '/layouts/include_senha'%>
+
+  <h3>Pacientes em débito</h3>
+  
+  <% form_tag :url=>pacientes_em_debito_debitos_path do %>
+    <% cont = 0 %>
+    <fieldset class='fieldset_60'>
+    <table class='transparente'>
+      <% @tabelas.each() do |tab| %>
+        <% if cont % 5 == 0 %>
+          </tr><tr>
+        <% end %>
+        <td><%= check_box_tag "tabela_#{tab.id}",value = tab.id,params['tabela_' + tab.id.to_s] %>  
+        <%= tab.nome %> </td>
+        <% cont += 1%>
+       <% end %>
+    </tr>
+    </table>
+    </fieldset>
+    <%  params[:tipo] = 'clinica' if !params[:tipo] %>
+    <%= radio_button_tag :tipo, :clinica, params[:tipo]=='clinica'  %> da clínica
+    <%= radio_button_tag :tipo, :ortodontia, params[:tipo]=='ortodontia' %> de ortodontia
+    <%= submit_tag "pesquisar" %>
+  <% end %>
+  <br/>
+  <table class='tabela'>
+  <tr>
+    <th>Paciente</th>
+    <th>Telefone</th>
+    <th>Celular</th>
+    <th>Saldo devedor</th>
+    <th>Último lançamento</th>
+  </tr>
+  <% dados = "#{@titulo};>Paciente;Telefone;Celular;Saldo devedor;Último lançamento>left;left;left;right;center;>"%>
+  <% total = 0.0 %>
+  <% @em_debito.each() do |pac| %>
+    <tr>
+    <td><%= link_to pac.nome , abre_paciente_path(pac)%></td>
+    <td><%= pac.telefone %></td>
+    <td><%= pac.celular %></td>
+    <td align="right" style="color:red;"><%= pac.saldo.real %></td>
+    <td align='center'><%= pac.ultimo_lancamento && pac.ultimo_lancamento.to_s_br %></td>
+    <% total += pac.saldo %>
+    </tr>
+    <% dados += "#{pac.nome};#{pac.telefone};#{pac.celular};#{pac.saldo.real};#{pac.ultimo_lancamento && pac.ultimo_lancamento.to_s_br}>"%>
+  <% end %>
+  <tr>
+  <td>Total</td>
+  <td colspan="3"align="right" style="color:red;"><%= total.real %></td>
+  </tr>
+  <% dados += "Total;;;#{total.real};>"%>
+  </table>
+  <%= link_de_impressao(dados) %>
+<% end %>

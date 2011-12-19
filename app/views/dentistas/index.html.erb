@@ -1,0 +1,48 @@
+<% content_for :main do %>
+<h3>Listando dentistas</h3>
+<p>
+<%= link_to 'Novo dentista', new_dentista_path if current_user.master? %>
+</p>
+<% form_tag dentistas_path, :method=>:get do %>
+  <p>
+  <%= radio_button_tag :ativo, true , params[:ativo]=="true" -%> Ativos
+  <%= radio_button_tag :ativo, false, params[:ativo]=="false" -%> Inativos
+  &nbsp;&nbsp;&nbsp;
+  <%= label_tag :que_iniciam_com %> : 
+  <%= text_field_tag :iniciais, params[:iniciais] %>
+  &nbsp;&nbsp;&nbsp;<%= submit_tag "pesquisar"-%>
+  </p>
+<% end %>
+<table class='tabela'>
+  <thead><tr>
+    <th width="270px">Nome</th>
+    <th width="80px">Telefone</th>
+    <th width="80px">Celular</th>
+    <th width="50px">Ortodontista</th>
+    <th width="50px">Ativo</th>
+    <th width="50px">Percentual</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+  </tr></thead>
+  <tbody>
+<% @dentistas.each do |dentista| %>
+  <tr>
+    <td><%= dentista.nome%></td>
+    <td><%=h dentista.telefone %></td>
+    <td><%=h dentista.celular %></td>
+    <td id="<%= dentista.id %>" align='center'><%= link_to_function dentista.ortodontista ? 'sim' : 'não', "troca_para_ortodontista(#{dentista.id})" %></td>
+    <td align='center'><%=h dentista.ativo  ? "sim" : "não"  %></td>
+    <td align="center"><%= dentista.percentual %></td>
+    <td><%= link_to "editar", abre_dentista_path(:id=>dentista.id), :class=>'ui-icon ui-icon-folder-open' if current_user.master? %></td>
+    <td>
+	    <% if dentista.ativo? %>
+	      <%= link_to 'desativar', dentista, :confirm => 'Tem certeza ?', :method => :delete, :class => "ui-icon ui-icon-cancel" %>
+	    <% else %>
+	      <%= link_to 'reativar', reativar_dentista_path(dentista) %>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+<% end %>

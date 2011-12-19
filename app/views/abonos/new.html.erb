@@ -1,0 +1,27 @@
+<% content_for :main do %>
+
+ <script type="text/javascript">
+    $(function() {
+        $("#paciente").autocomplete({
+          source: "pesquisa_nomes",
+          minLength: 6,
+          maxRows: 5,
+          select: function(event,ui){
+            nome = ui.item.value;
+            $("#paciente").val(nome);
+          }
+        });
+      });
+
+</script>
+
+<fieldset class="fieldset_40">
+  <legend>Novo abono</legend>
+<% form_for(@abono) do |f| %>
+  <%= f.error_messages %>
+  <%= render :partial => 'form' , :locals => {:f => f}%>
+<% end %>
+
+<%= link_to 'voltar', :back %>
+</fieldset>
+<% end %>

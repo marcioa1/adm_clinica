@@ -1,0 +1,63 @@
+<% content_for :main do %>
+<%= render :partial => '/layouts/include_senha'%>
+  <h3>Produção dos dentistas</h3>
+  <p class='mensagem_de_erro'><%= @erros %></p>
+  <% form_tag :url=>producao_geral_dentistas_path do %>
+    <%= label_tag "Entre : " %>
+    <%= text_field_tag :data_inicial, @data_inicial.to_s_br, :size=>10, :class=> 'datepicker' %>
+    <%= label_tag " e : " %>
+    <%= text_field_tag :data_final, @data_final.to_s_br, :size=>10, :class=> 'datepicker' %>
+      <%= render :partial => 'clinicas/opcoes' , :locals => {:clinicas => @clinicas }%>
+    <%= submit_tag "pesquisar"%>
+  <% end %>
+  <p/>
+  <% codigos = Array.new %>
+  <% dados = "Produção dos dentistas entre #{@data_inicial.to_s_br} e #{@data_final.to_s_br};>Dentista;Percent;Valor;Custo;Do dentista;Da clínica;>left;right;right;right;right;right>" %>
+  <table class='tabela'>
+    <tr>
+      <th>Dentista</th>
+      <th>Percentual</th>
+      <th width='110'>Valor</th>
+      <th width='110'>Custo</th>
+      <th width='110'>Do dentista</th>
+      <th width='110'>Da clínica</th>
+    </tr>
+    <% total = Array.new(5, 0)%>
+    <% @todos.each do |dentista| %>
+      <% val = dentista.producao_entre_datas(@data_inicial,@data_final).split("/")%>
+		  <% if val[1].to_f != 0.0 %>
+	      <tr>
+	        <td><%= link_to dentista.nome, abre_dentista_path(dentista.id) %>
+	          <% if dentista.ortodontista? %>
+	          orto
+	          <% end %>
+	          </td>
+	        <% dados += "#{dentista.nome};" %>
+	        <% ind = 0 %>
+	        <% val.each do |valor| %>
+	          <td align='right'><%= valor.to_f.real %></td>
+            <% dados += "#{valor.to_f.real};" %>
+	          <% total[ind] += valor.to_f %>
+	          <% ind += 1 %>
+	        <% end %>
+	        <% dados += ">" %>
+	      </tr>
+      <% end %>
+    <% end %>
+    <tr>
+      <td colspan="2" align='right'>Total : </td>
+      <% dados +="Total;;" %>
+      <% (1..4).each do |ind| %>
+        <td align='right'><%= total[ind].real %></td>
+        <% dados += "#{total[ind].real};" %>
+      <% end %>
+      <% dados += ">"%>
+    </tr>
+    
+  </table>
+  <br />
+  <%= link_de_impressao(dados) %> | 
+  <%= link_to "imprime produção detalhada", imprime_producao_detalhada_dentistas_path(:ids=>@todos.map(&:id).join(','),
+     :data_inicial => @data_inicial, :data_final => @data_final, 
+     :clinicas => @clinicas_da_pesquisa) %>
+<% end %>

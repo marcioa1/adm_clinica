@@ -1,0 +1,36 @@
+<% content_for :main do %>
+<h3>Listando pagamentos</h3>
+INDEX
+<% form_tag :controller=>"pagamentos", :action=>"index" do %>
+  Entre : <%= date_select :inicio, @data_inicial %> e 
+  <%= date_select :fim, @data_final%>
+  <%= submit_tag "pesquisar"%>
+<% end %>
+
+<table class='tabela'>
+  <tr>
+    <th>Data de pagamento</th>
+    <th>Valor pago</th>
+    <th width="100px">Observação</th>
+    <th>Livro caixa</th>
+    <th>Data de exclusão</th>
+  </tr>
+
+<% @pagamentos.each do |pagamento| %>
+  <tr>
+    <td><%=h pagamento.data_de_pagamento.to_s_br %></td>
+    <td align="right"><%=h pagamento.valor_pago.real %></td>
+    <td><%=h pagamento.observacao %></td>
+    <td><%=h pagamento.nao_lancar_no_livro_caixa %></td>
+    <td><%=h pagamento.data_de_exclusao.to_s_br %></td>
+    <td><%= link_to 'mostrar', pagamento %></td>
+    <td><%= link_to 'editar', edit_pagamento_path(pagamento) %></td>
+    <td><%= link_to 'excluir', pagamento, :confirm => 'Tem certeza ?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'novo pagamento', new_pagamento_path %>
+<% end %>

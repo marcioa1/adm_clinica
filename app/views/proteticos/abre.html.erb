@@ -1,0 +1,88 @@
+<% content_for :main do %>
+<br/>
+<h3>Protético <%= @protetico.nome %></h3>
+<span id="protetico_id" style="display:   none;"><%= @protetico.id %></span>
+<% if @clinica_atual.administracao? %>
+
+	<div id="tabs">
+	    <ul>
+	        <li><a href="#fragment-1"><span>Cadastro</span></a></li>
+	        <li><a href="#fragment-2"><span>Trabalhos a pagar</span></a></li>
+	        <li><a href="#fragment-3"><span>Pagamento</span></a></li>
+	        <li><a href="#fragment-4"><span>Tabela</span></a></li>
+	    </ul>
+	    <div id="fragment-1">
+	      <%= render :partial=>"edit" , :locals=>{:protetico=>@protetico} %>
+	    </div>
+	    <div id="fragment-2">
+  	      <%= render :partial=>"trabalhos_entregues_nao_pagos" %>
+	    </div>
+	    <div id="fragment-3">
+  	      <%= render :partial=>"pagamentos", :locals=>{:pagamentos => @pagamentos} %>
+	    </div>
+	    <div id="fragment-4">
+	      <%= render :partial=>"tabela" %>
+	    </div>
+    
+	</div>
+<% else %>
+  <div id="tabs">
+    <ul>
+        <li><a href="#fragment-1"><span>Cadastro</span></a></li>
+        <li><a href="#fragment-2"><span>Itens pendentes</span></a></li>
+        <li><a href="#fragment-3"><span>Liberação de pagamento</span></a></li>
+        <li><a href="#itens-liberados"><span>Itens liberados para pagamento</span></a></li>
+        <li><a href="#fragment-4"><span>Tabela</span></a></li>
+        <li><a href="#pagamentos"><span>Pagamentos realizados</span></a></li>
+    </ul>
+    <div id="fragment-1">
+      <%= render :partial=>"edit", :locals => { :protetico => @protetico }  %>
+    </div>
+    <div id="fragment-2">
+      <%= render :partial=>"trabalhos_pendentes" , :locals=>{:trabalhos_pendentes=>@trabalhos_pendentes}%>
+    </div>
+    <div id="fragment-3">
+      <!-- <%= render :partial=>"trabalhos_entregues_nao_pagos" %> -->
+    </div>
+    <div id="itens-liberados">
+      <%= render :partial => 'itens_liberados_para_pagamento', :locals => {:itens => TrabalhoProtetico.do_protetico(@protetico.id).da_clinica(session[:clinica_id]).liberados_para_pagamento } %>
+    </div>
+    <div id="fragment-4">
+      <%= render :partial=>"tabela" %>
+    </div>
+    <div id='pagamentos'>
+      <%= render :partial=>'pagamentos', :locals=>{:pagamentos => @pagamentos}  %>
+    </div>
+</div>
+<% end %>
+<% if !@clinica_atual.administracao? %>
+  <script type="text/javascript">
+  $("#tabs").tabs({
+     select: function(event, ui) { 
+       if (ui.index == 2){
+         $.ajax({
+           url : "/proteticos/busca_trabalhos_devolvidos",
+           type: 'GET',
+           data: {id: $("#protetico_id").html()},
+           success: function(data){
+             $("#fragment-3").html(data);
+           }
+         });
+       }
+       if (ui.index == 33){
+         $.ajax({
+           url : "/proteticos/busca_trabalhos_liberados",
+           type: 'GET',
+           data: {id: $("#protetico_id").html()},
+           success: function(data){
+             $("#itens-liberados").html(data);
+           }
+         });
+       }
+
+
+     }
+  });
+  </script>
+<% end %>
+<% end %>

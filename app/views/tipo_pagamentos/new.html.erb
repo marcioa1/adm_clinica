@@ -1,0 +1,22 @@
+<% content_for :main do %>
+<fieldset>
+	<legend>Novo tipo de pagamento</legend>
+
+<% form_for(@tipo_pagamento) do |f| %>
+  <%= f.error_messages %>
+<%= f.hidden_field :clinica_id%>
+  <p>
+    <%= f.label :nome %><br />
+    <%= f.text_field :nome %>
+  </p>
+  <p>
+    <%= f.check_box :ativo %><%= f.label :ativo %>
+  </p>
+  <p>
+    <%= f.submit 'Criar' if current_user.pode_alterar_na_clinica? %>
+  </p>
+<% end %>
+
+<%= link_to 'voltar', tipo_pagamentos_path %>
+</fieldset>
+<% end %>

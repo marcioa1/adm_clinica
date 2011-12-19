@@ -1,0 +1,48 @@
+<% form_for(@protetico) do |f| %>
+  <%= f.error_messages %>
+
+ <div>
+    <%= f.label :nome %>
+    <%= f.text_field :nome, :size=>40, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :logradouro %>
+    <%= f.text_field :logradouro, :size=>50, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :numero %>
+    <%= f.text_field :numero, :size=>10, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :complemento %>
+    <%= f.text_field :complemento, :size=>10, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :telefone %>
+    <%= f.text_field :telefone, :size=>25, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :celular %>
+    <%= f.text_field :celular, :size=>25, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :email %>
+    <%= f.text_field :email, :size=>40, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :bairro %>
+    <%= f.text_field :bairro, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :observação %>
+    <%= f.text_field :observacao, :size=>35, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.check_box :ativo %>
+    <%= f.label :ativo %>
+  </div>
+  <div>
+    <%= f.submit 'salvar' %>
+  </div>
+<% end %>
+

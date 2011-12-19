@@ -1,0 +1,17 @@
+<h3>Pacientes de ortodontia</h3>
+<table class='tabela'>
+  <tr>
+    <th width="300px">Nome</th>
+    <th width="100px">Mensalidade</th>
+    <th>Data suspensão cobrança</th>
+    <th>Motivo suspensão cobrança</th>
+  </tr>
+  <% @dentista.pacientes_de_ortodontia.each do |pac| %>
+    <tr>
+      <td><%= pac.nome %></td>
+      <td align='right'><%= pac.mensalidade_de_ortodontia.real %></td>
+      <td><%= pac.data_da_suspensao_da_cobranca_de_orto.to_s_br unless pac.data_da_suspensao_da_cobranca_de_orto.nil? %></td>
+      <td><%= pac.motivo_suspensao_cobranca_orto unless pac.motivo_suspensao_cobranca_orto.nil?%></td>
+    </tr>
+  <% end %>
+</table>

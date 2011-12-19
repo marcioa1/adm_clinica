@@ -1,0 +1,58 @@
+<% content_for :main do%>
+<%= render :partial => '/layouts/include_senha'%>
+  <h3>Recebimento das clinicas</h3>
+  <% form_tag das_clinicas_recebimentos_path do %>
+  <div style='floate: right; '>
+  <%= render :partial =>"formas_recebimentos/opcoes" , :locals=>{:formas=>@formas_recebimento }%>
+  </div>
+  <%= render :partial =>"clinicas/opcoes", :locals=>{:clinicas=>@todas_as_clinicas} %>
+  <br/>
+  Entre : <%= text_field_tag :datepicker, params[:datepicker], :size=>10 %>
+  e : <%= text_field_tag :datepicker2, params[:datepicker2], :size=>10%>
+  <%= submit_tag "pesquisar"%>
+  <br/><br/>
+  <% end %>
+  
+  <div id="conteudo">
+  <div id="resultado" style='padding-left: 0em;'>
+    <%= @recebimentos.size %> lançamentos.
+  <table class="tabela">
+	<tr>
+	  <th width="90px">Data</th>
+	  <th width="270px">Paciente</th>
+	  <th width="80px">Valor</th>
+	  <th width="65px">Forma</th>
+	  <th width="145px">Clínica</th>
+	</tr>
+	<% dados = "#{@titulo};>Data;Paciente;Valor;Forma;Clínica>center;left;right;left;left;>" %>
+
+	<% @total = 0 %>
+	<% @por_clinica = Array.new(12,0) %>
+  <%= render :partial=>"recebimento" , :collection=>@recebimentos, :locals =>{:dados =>dados} %>
+  <% @recebimentos.each do |recebimento| %>
+    <% dados+= "#{recebimento.data.to_s_br};#{recebimento.paciente.nome};#{recebimento.valor.real};#{recebimento.formas_recebimento.nome};#{recebimento.clinica.nome};>"%>
+  <% end %>
+  <% dados += ";Total;#{@total}; ; ;>"%>
+	<tr>
+	  <td colspan="2" align="center">Total : </td>
+	  <td align= "right"><%= @total.real %></td>
+	  <td colspan="2">&nbsp;</td>
+	</tr>
+  </table>
+  </div>
+  <div id="grafico">
+    <% options = [] %>
+    <% clinica = 0 %>
+    <% @por_clinica.each do |cl| %>
+        <% if cl > 0 %>
+          <% options << [ Clinica.find(clinica).nome , (cl * 100 / @total).to_i ] %>
+        <% end %>
+        <% clinica += 1%>
+    <% end %>
+     <%= google_pie_chart(options, :width => 490, :height => 150) %>
+    
+  </div>
+  </div>
+    <%= link_de_impressao(dados, session[:clinica_id], 'portrait') %>
+
+<% end %>

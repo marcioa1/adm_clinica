@@ -1,0 +1,41 @@
+<% content_for :main do %>
+
+<h3>Listando abonos</h3>
+<% form_tag  abonos_path() , :method=>"get" do %>
+  <%= label_tag "Entre : " %>
+  <%= text_field_tag 'datepicker', @data_inicial.to_s_br, :size=>10 %>
+  <%= label_tag " e : " %>
+  <%= text_field_tag 'datepicker2', @data_final.to_s_br, :size=>10 %>
+  <%= submit_tag "pesquisar" %>
+<% end %>
+<div>
+  <br />
+<table class="tabela">
+  <tr>
+    <th>Data</th>
+    <th>Clínica</th>
+    <th>Paciente</th>
+    <th>Valor</th>
+    <th>Observação</th>
+    <th>Ortodontista</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+  </tr>
+
+<% @abonos.each do |abono| %>
+  <tr>
+    <td><%= abono.data.to_s_br %></td>
+    <td><%= abono.paciente.clinica.nome %></td>
+    <td><%= link_to abono.paciente.nome , abre_paciente_path(abono.paciente) %></td>
+    <td><%= abono.valor.real %></td>
+    <td><%= abono.observacao %></td>
+    <td><%= abono.paciente.ortodontista && abono.paciente.ortodontista.nome %></td>
+    <td><%= link_to 'Editar', edit_abono_path(abono) %></td>
+    <td><%= link_to 'Apagar', abono, :confirm => 'Tem certeza?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+</div>
+<br />
+
+<% end %>

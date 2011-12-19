@@ -1,0 +1,62 @@
+<% content_for :main do %>
+<p>
+  <b>Paciente:</b>
+  <%=h @orcamento.paciente.nome %>
+</p>
+
+<p>
+  <b>Numero:</b>
+  <%=h @orcamento.numero %>
+</p>
+
+<p>
+  <b>Data:</b>
+  <%=h @orcamento.data.to_s_br %>
+</dp>
+
+<p>
+  <b>Dentista:</b>
+  <%=h @orcamento.dentista.nome %>
+</p>
+
+<p>
+  <b>Valor:</b>
+  <%=h @orcamento.valor.real %>
+</p>
+
+<p>
+  <b>Desconto:</b>
+  <%=h @orcamento.desconto %> %
+</p>
+
+<p>
+  <b>Valor final:</b>
+  <%=h @orcamento.valor_com_desconto.real %>
+</p>
+
+<p>
+  <b>Forma de pagamento:</b>
+  <%=h @orcamento.forma_de_pagamento %>
+</p>
+
+<p>
+  <b>Numero de parcelas:</b>
+  <%=h @orcamento.numero_de_parcelas %>
+</p>
+
+<p>
+  <b>Vencimento primeira parcela:</b>
+  <%=h @orcamento.vencimento_primeira_parcela.to_s_br %>
+</p>
+
+<p>
+  <b>Valor da parcela:</b>
+  <%=h @orcamento.valor_da_parcela.real %>
+</p>
+<p>
+  <p>Parcelas :</p>
+  <%= render :partial=>'parcelas' %>
+</p>
+<%= render :partial => 'tratamentos', :locals=>{:tratamentos => @orcamento.tratamentos }%>
+
+<% end %>

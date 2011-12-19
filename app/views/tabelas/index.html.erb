@@ -1,0 +1,58 @@
+<% content_for :main do %>
+<h3>Listando tabelas</h3>
+
+<% form_tag tabelas_path, :method => :get do %>
+	<%= radio_button_tag :ativa, :sim, params[:ativa] == 'sim' %> Ativa
+	<%= radio_button_tag :ativa, :nao, params[:ativa] == 'nao' %> Inativas
+	<%= submit_tag 'Pesquisar'%>
+<% end -%>	
+<p/>
+
+
+<table class='tabela'>
+  <tr>
+    <th width="150px">Tabela</th>
+    <th>Clínica</th>
+    <th>Ativa</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+  </tr>
+<% @tabelas.each do |tabela| %>
+  <tr id = <%= "tr_#{tabela.id}" %>>
+    <td><%= link_to tabela.nome, item_tabelas_path(:tabela_id=>tabela.id) %></td>
+    <td><%= tabela.clinica.nome %></td>
+    <td><%= tabela.ativa ? "sim" : "não" %></td>
+    <td>
+      <% if tabela.ativa %>
+        <%= link_to_function 'desativar' , "desativar_tabela(#{tabela.id})", :class=>'ui-icon ui-icon-cancel', :text=> "cancelar" if current_user.pode_alterar_na_clinica? %>
+      <% else %>
+        &nbsp;
+      <% end %>
+    </td>
+    <td><%= link_to 'Editar', edit_tabela_path(tabela), :class=>'ui-icon ui-icon-pencil' if current_user.pode_alterar_na_clinica?  %></td>
+    <td><% if params[:ativa] == 'nao'%>
+	        <%= link_to 'Reativar', reativar_tabela_path(tabela), :confirm => 'Tem certeza ?' if current_user.pode_alterar_na_clinica? %>
+        <% else %>
+          <%= link_to 'Excluir', tabela, :confirm => 'Tem certeza ?', :method => :delete, :class=>'ui-icon ui-icon-trash' if tabela.pode_excluir? %>
+        <% end %>
+    </td>
+
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'Nova tabela', new_tabela_path if current_user.pode_alterar_na_clinica?  %>
+<script type="text/javascript">
+  function desativar_tabela(id){
+    $.ajax({
+      url: "/tabelas/" + id + "/desativar",
+      success: function(data){
+        $("#tr_"+id).remove();
+      },
+    })
+  }
+</script>
+<% end %>

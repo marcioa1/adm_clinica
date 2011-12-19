@@ -1,0 +1,10 @@
+- content_for :main do
+  = render :partial => '/layouts/include_senha'
+  %h3 
+    Pagamentos de hoje ( 
+    = Date.today.to_s_br
+    )
+  #novo_pagamento
+    = button_to 'novo pagamento', new_pagamento_path if current_user.pode_alterar_na_clinica?
+  = render :partial=>'pagamentos', :locals=>{:pagamentos => @pagamentos_no_livro_caixa, :titulo=>'No livro caixa'}
+  = render :partial=>'pagamentos', :locals=>{:pagamentos => @pagamentos_fora_do_livro_caixa, :titulo=>'Fora do livro caixa'}

@@ -1,0 +1,10 @@
+<% content_for :main do %>
+<% form_for(@user) do |f| %>
+  <%= f.error_messages %>
+  <%= render :partial => "form", :object => f %>
+  <br/>  
+  <%= f.submit "Salvar" %>
+<% end %>
+<br/>
+<%= link_to "Voltar", users_path%>
+<% end %>

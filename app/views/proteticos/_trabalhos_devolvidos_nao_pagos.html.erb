@@ -1,0 +1,31 @@
+<h2>Trabalhos devolvidos não pagos</h2>
+<% dados = "Trabalhos devolvidos e não pagos do protético #{@protetico.nome};>Paciente;Dente;Data  de envio;Descrição;Observação;Valor;Data de Devolução;Dentista;>left;center;center;left;left;right;center;left>"%>
+<table class='tabela'>
+  <tr>
+    <th><br/>Paciente</th>
+    <th><br/>Dente</th>
+    <th><br/>Data de envio</th>
+    <th><br/>Descrição</th>
+    <th><br/>Observação</th>
+    <th><br/>Valor</th>
+    <th>Data prevista<br/>de devolução</th>
+    <th><br/>Data de devolução</th>
+    <th><br/>Dentista</th>
+  </tr>
+<% @trabalhos_devolvidos.each do |trab| %>
+  <tr>
+  	<td><%= trab.paciente.nome%></td>
+  	<td><%= trab.dente if trab.dente.present? %></td>
+    <td align='center'><%= trab.data_de_envio.to_s_br%></td>
+    <td><%= link_to trab.tabela_protetico.descricao, edit_trabalho_protetico_path(trab) %></td>
+    <td><%= trab.observacoes %></td>
+    <td align='right'><%= trab.valor.real %></td>
+    <td align='center'><%= trab.data_prevista_de_devolucao.to_s_br%></td>
+    <td align='center'><%= trab.data_de_devolucao.to_s_br %></td>
+    <td><%= trab.dentista.nome %></td>
+    <% dados += "#{trab.paciente.nome};#{trab.dente};#{trab.data_de_envio.to_s_br};"%>
+    <% dados += "#{trab.tabela_protetico.descricao};#{trab.observacoes};#{trab.valor.real};#{ trab.data_de_devolucao.to_s_br};#{trab.dentista.nome}>"%>
+  </tr>
+<% end %>
+</table>
+<%= link_to "imprime", "#", :onclick=>"gera_pdf('#{dados}')", :class=>'ui-icon ui-icon-print'%>

@@ -1,0 +1,16 @@
+%table{:id=>'cep', :class=>'tabela'}
+  %tr
+    %th Logradouro
+    %th= "Bairro"
+    %th= "Cidade"
+    %th= "cep"
+    %th &nbsp;
+  -ceps.each do |cep|
+    %tr
+      %td= cep.logradouro
+      %td= cep.bairro
+      %td= cep.cidade
+      %td= cep.cep
+      %td= link_to_function 'selecionar', "selecionar_cep('#{cep.cep}')"
+
+:javascript

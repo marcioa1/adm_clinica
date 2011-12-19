@@ -1,0 +1,23 @@
+<% content_for :main do %>
+<fieldset>
+<legend>Novo banco</legend>
+
+<% form_for(@banco) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :número %><br />
+    <%= f.text_field :numero, :size=>5 %>
+  </p>
+  <p>
+    <%= f.label :nome %><br />
+    <%= f.text_field :nome %>
+  </p>
+  <p>
+    <%= f.submit 'salvar' %>
+  </p>
+<% end %>
+
+<%= link_to 'voltar', bancos_path %>
+</fieldset>
+<% end %>

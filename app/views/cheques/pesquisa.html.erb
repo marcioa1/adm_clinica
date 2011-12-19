@@ -1,0 +1,66 @@
+<% content_for :main do %>
+  <%= render :partial => '/layouts/include_senha'%>
+
+  <h3>Pesquisa Cheque</h3>
+  <% form_tag pesquisa_cheques_path do %>
+    <table class='transparente'>
+      <tr>
+        <td>Banco</td>
+        <td>Agência</td>
+        <td>Número</td>
+        <td>Valor</td>
+        <td>Ano</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td><%= select_tag :banco, options_for_select(@bancos.insert(0, ''), params[:banco] )%></td>
+        <td><%= text_field_tag :agencia, params[:agencia], :size=>10 %></td>
+        <td><%= text_field_tag :numero, params[:numero], :size=>10 %></td>
+        <td><%= text_field_tag :valor, params[:valor], :size=>10 %></td>
+        <td><%= text_field_tag :ano, params[:ano], :size => 6 %></td>
+        <td><%= submit_tag "Pesquisar"%></td>
+      </tr>
+    </table>
+  <% end %>
+  <p>
+    <%= @cheques.size %> cheques encontrados.
+  </p>
+  <table class='tabela'>
+    <th>seq</th>
+    <th width='140px'>Banco</th>
+    <th>Agência</th>
+    <th>Número</th>
+    <th width='90px'>Bom para</th>
+    <th width='70px'>Valor</th>
+    <th width='330px'>Paciente</th>
+    <th>Situação</th>
+    <% if @clinica_atual.administracao? %>
+      <th>Clínica</th>
+      <th>Devolver p/ clínica</th>
+    <% end %>
+    <% @cheques.each do |cheque| %>
+      <tr>
+        <td><%= link_to cheque.id, edit_cheque_path(cheque.id) %></td>
+        <td><%= cheque.banco.nome if cheque.banco.present?%></td>
+        <td><%= cheque.agencia %></td>
+        <td><%= cheque.numero %></td>
+        <td align='center'><%=cheque.bom_para.to_s_br%></td>
+        <td align='right'><%=cheque.valor.real%></td>
+        <td><%= cheque.nome_dos_pacientes  %></td>
+        <td>
+          <% if cheque.usado_para_pagamento? %>
+            <%= link_to cheque.status + " / " + cheque.pagamento.tipo_pagamento.nome, "#", :onclick=>'abre_pagamento( ' + cheque.pagamento_id.to_s + ')'%>
+          <% else %>
+            <%=  cheque.status %>
+          <% end %>
+        </td>
+        <% if @clinica_atual.administracao? %>
+          <td><%= cheque.clinica.nome %></td>
+          <td>
+            <%= link_to 'devolver à clínica', "javascript:devolve_cheque_a_clinica(#{cheque.id})" if  cheque.recebido_pela_administracao? %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+<% end %>

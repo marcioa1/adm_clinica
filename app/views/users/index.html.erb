@@ -1,0 +1,8 @@
+<% content_for :main do %>
+  <h3>Usuários por nome</h3>
+  <%= render :partial=> 'users', :locals=> { :users => @users, :title => 'Ativos' } %>
+  <%= render :partial=> 'users', :locals=> { :users => @inativos, :title =>  'Inativos' } %>
+<br/>
+<%= link_to"Novo", new_user_path() if current_user.pode_incluir_user%>
+
+<% end %>

@@ -1,0 +1,12 @@
+<% content_for :main do %>
+
+<fieldset class="fieldset_40">
+  <legend>Editando abono</legend>
+  <% form_for(@abono) do |f| %>
+    <%= f.error_messages %>
+    <%= render :partial => 'form', :locals => { :f => f }%>
+  <% end %>
+
+  <%= link_to 'voltar', :back %>
+</fieldset>
+<% end %>

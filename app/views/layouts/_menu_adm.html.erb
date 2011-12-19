@@ -1,0 +1,57 @@
+<ul>
+  <li><a href= "#">Cadastro</a>
+    <ul>
+      <li><%= link_to "Tabelas", tabelas_path %></li>
+      <li><%= link_to "Dentistas", dentistas_path %></li>
+      <li><%= link_to "Protéticos", proteticos_path %></li>
+      <li><%= link_to "Usuários", users_path %></li>
+      <li><%= link_to "Descrição das condutas", descricao_condutas_path %></li>
+      <li><%= link_to "Tabela de protético", tabela_proteticos_path %></li>
+      <li><%= link_to "Indicação" , indicacaos_path %></li>
+      <li><%= link_to "Bancos", bancos_path %></li>
+      <li><%= link_to "Contas Bancárias", conta_bancarias_path %></li>
+      <li><%= link_to "Destinações", destinacaos_path %></li>
+    </ul>
+  </li>
+  <li><a href="#">Paciente</a>
+    <ul>
+      <li><%= link_to "Pesquisa paciente", pesquisa_pacientes_path %></li>
+    </ul>
+  </li>
+  <li><a href="#">Gerência</a>
+    <ul>
+      <li><%= link_to "Produção dos dentistas", producao_geral_dentistas_path %></li>
+      <li><%= link_to "Aproveitamento dos orçamentos", aproveitamento_orcamentos_path %></li>
+      <li><%= link_to "Lista de abonos", abonos_path if current_user.master? %></li>
+      <li><%= link_to "Trabalhos de protéticos entregues e não pagos", trabalhos_por_clinica_proteticos_path %></li>
+      <li><%= link_to "Pagamentos feitos aos protéticos", pagamentos_feitos_proteticos_path %></li>
+      <li><%= link_to "Resumo anual - falta", "#" %></li>
+      <li><%= link_to "Controle de exclusões", relatorio_de_exclusao_clinicas_path %></li>
+      <li><%= link_to "Monitoramento de usuários", monitoramento_users_path %></li>
+      <li><%= link_to "Inconsistências", inconsistencias_clinicas_path if current_user.master? %></li>
+      <li><%= link_to "Pacientes com crédito", pacientes_com_credito_clinicas_path if current_user.master? %></li>
+    </ul>
+  </li>
+  <li><a href="#">Financeiro</a>
+    <ul>
+      <li><%= link_to "Relatório de Pagamentos", relatorio_pagamentos_path %></li>
+      <li><%= link_to "Pagamentos de hoje", pagamentos_de_hoje_pagamentos_path %></li>
+      <li><%= link_to "Fluxo de caixa", fluxo_de_caixa_path %></li>
+      <li><%= link_to "Fechamento de mês", fechamento_de_mes_path %></li>
+      <li><%= link_to "Tipo de pagamento", tipo_pagamentos_path %></li>
+      <li><%= link_to "Formas de recebimento", formas_recebimentos_path %></li>    
+      <li><%= link_to "Lista de cheques", cheques_recebidos_cheques_path %></li>
+      <li><%= link_to "Pesquisa cheque", pesquisa_cheques_path %></li>
+      <li><%= link_to "Confirma recebimento de cheques", confirma_recebimento_cheques_path %></li>    
+      <li><%= link_to "Cheques confirmados", recebimento_confirmado_cheques_path %></li>
+      <li><%= link_to "Entrada/Remessa de dinheiro", entradas_path %></li>
+      <li><%= link_to "Recebimentos", das_clinicas_recebimentos_path %></li>
+      <li><%= link_to "Registra entrada de dinheiro", na_administracao_entradas_path %></li>
+      <% if current_user.master? %>
+        <li><%= link_to "Saldo fluxo de caixa" , conserta_saldo_path %></li>
+      <% end %>
+      <li><%= link_to "Fechamento de mês", fechamento_mes_clinicas_path %></li>
+
+    </ul>
+  </li>
+</ul>

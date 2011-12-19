@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" >
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <title>Classident
+    </title>
+
+  <%= stylesheet_link_tag 'jquery.ui.autocomplete', 'jquery.ui.tabs', 'jquery.ui.datepicker'%>
+
+  <% if RAILS_ENV == "development"%>
+    <%= javascript_include_tag 'jquery-1.4.js' %>
+    <%= javascript_include_tag 'jquery-ui-1.8.custom.min' %>
+  <% else %>
+    <script src="http://www.google.com/jsapi?key=ABQIAAAAjvzs-ZogAGiunZQ8Jl21TBRtdQgZiUqLdjHUMTfxUCYUR5UWoxSFtbdXCKR_vOwS_kPEOepv5GrTDw" type="text/javascript"></script>
+    <%= javascript_include_tag  'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js' %>
+    <%= javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.3/jquery-ui.min.js'%>
+  <% end %>
+  <%= javascript_include_tag 'application.js'%>
+  <%= javascript_include_tag 'ui.datepicker-pt-BR.js'%>
+
+  <%= stylesheet_link_tag 'adm', 'jquery.loading.1.6', 'jquery', 'jquery.ui.core' %>
+
+</head>
+  <body style='background-color: #E6EDF8;'>
+    <div id="wrapper">
+      <div id="header">
+        <%= image_tag "logo2.jpg" %>
+        <div id="login">
+          Usuário : <%= current_user.nome %> ( <%= current_user.tipo_usuario.nome %> )
+          | <%= link_to "trocar senha", troca_senha_path %>
+          | <%= link_to "logout", logout_path %>
+          | <%= session[:clinica_id] %>
+        </div> <!-- login -->
+        <div id="header-bottomm">
+
+          <div class="menu">
+            <%= render :partial=>"layouts/menu_clinica" %>
+          </div>
+        </div> <!-- header-bottom -->
+      </div> <!-- header -->
+    <div id="main">
+      <% if !flash[:notice].blank? %>
+        <div id="notice">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+      <p>  
+        <%= nome_paciente(@paciente) if @paciente && !@paciente.new_record? %>
+      </p>
+
+        <%= yield :main %>
+    </div> <!-- main-- >
+
+  </div><!-- wrapper -->
+  <div id="rodape">
+    © <%= Date.today.year %> - <a href="http://www.anadata.com.br/"><strong>Anadata Sistemas</strong></a>
+    - Todos os direitos reservados
+  </div>
+
+
+</body>
+  <%= javascript_include_tag 'jquery.price_format.1.0.js' %>
+  <%= javascript_include_tag 'jrails.js'%>
+  <%= javascript_include_tag 'select_boxes.js'%>
+  <%= javascript_include_tag 'ui.datepicker-pt-BR.js'%>
+  <%= javascript_include_tag 'jquery.loading.1.6.4.min.js'%>
+
+  <%= javascript_include_tag 'protetico.js' %>
+  <%= javascript_include_tag 'jquery.cookies.2.2.0'%>
+
+</html>

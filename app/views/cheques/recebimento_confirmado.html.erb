@@ -1,0 +1,44 @@
+<% content_for :main do %>
+<%= render :partial => '/layouts/include_senha'%>
+<h3>Cheques confirmados</h3>
+<% form_tag recebimento_confirmado_cheques_path do %>
+Cheques com recebimento confirmados entre
+<%= text_field_tag :datepicker, @inicio.to_s_br, :size=>10 %> e <%= text_field_tag :datepicker2, @fim.to_s_br, :size=>10 %>
+<%= submit_tag "Pesquisar"%>
+<% end %>
+<br/>
+<% dados = "Cheques confirmados;>Clínica;Paciente;Bom para;Banco;Valor;Recebido em;Estado;>left;left;center;left;right;left>" %>
+<%= @cheques.size %> 
+<table class='tabela'>
+  <tr>
+    <th>Clínica</th>
+    <th width="320px">Paciente</th>
+    <th>Bom para</th>
+    <th>Banco</th>
+    <th width="90px">Valor</th>
+    <th>Recebido em</th>
+    <th>Estado</th>
+  </tr>
+  
+  <% total = 0%>
+  <% @cheques.each() do |cheque| %>
+    <tr>
+      <td><%= cheque.clinica.nome %></td>
+      <td><%= cheque.nome_dos_pacientes %></td>
+      <td align="center"><%= cheque.bom_para.to_s_br %></td>
+      <td><%= cheque.banco.nome %></td>
+      <td align="right"><%= cheque.valor.real %></td>
+      <td align="center"><%= cheque.data_recebimento_na_administracao.to_s_br %></td>
+      <td><%= cheque.nome_do_destino %></td>
+    </tr>
+    <% total += cheque.valor %>
+    <% dados += "#{cheque.clinica.nome};#{cheque.nome_dos_pacientes};#{cheque.bom_para.to_s_br};#{cheque.banco.nome};#{cheque.valor.real};#{cheque.data_recebimento_na_administracao.to_s_br};#{cheque.nome_do_destino}>" %>  
+  <% end %>
+  <tr>
+    <td colspan="4" align= "center">Total</td>
+    <td align="right"><%= total.real %></td>
+    <td colspan="2">&nbsp;</td>
+  </tr>
+</table>
+<%= link_de_impressao(dados,session[:clinica_id],'landscape') %>
+<% end %>

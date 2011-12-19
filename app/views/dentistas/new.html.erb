@@ -1,0 +1,48 @@
+<% content_for :main do %>
+<fieldset class="fieldset_40">
+
+<legend>Novo dentista</legend>
+
+<% form_for(@dentista) do |f| %>
+  <%= f.error_messages %>
+  <%= f.hidden_field :clinica_id, session[:clinica_id] %>
+
+  <div>
+    <%= f.label :CRO %> : 
+    <%= f.text_field :cro, :size=>10 %>
+  </div>
+  <div>
+    <%= f.label :nome %> : 
+    <%= f.text_field :nome, :size=>45 %>
+  </div>
+  <div>
+    <%= f.label :telefone %> : 
+    <%= f.text_field :telefone, :size=>25 %>
+  </div>
+  <div>
+    <%= f.label :celular %> : 
+    <%= f.text_field :celular, :size=>25 %>
+  </div>
+  <div>
+    <%= f.label :especialidade %> : 
+    <%= f.text_field :especialidade, :size=>20 %>
+  </div>
+  <div>
+    <%= f.label :percentual %> : 
+    <%= f.text_field :percentual, :size=>4 %> %
+  </div>
+  <div>
+     <%= f.check_box :ativo %><%= f.label :ativo %>
+   &nbsp;&nbsp;&nbsp;
+   </div>
+   <div>
+     <%= f.check_box :ortodontista %><%= f.label :ortodontista %>
+  </div>
+  <div>
+    <%= f.submit 'Criar' %>
+  </div>
+<% end %>
+
+</fieldset>
+<%= link_to 'voltar', dentistas_path %>
+<% end %>

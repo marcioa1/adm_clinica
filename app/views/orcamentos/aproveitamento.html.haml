@@ -1,0 +1,24 @@
+- content_for :main do
+  = render :partial => '/layouts/include_senha'
+
+  %h3 Aproveitamento de Orçamento
+  - form_tag :url=>producao_geral_dentistas_path do
+    = render :partial=>'diversos/entre_datas'
+  %p
+  #tabs
+    %ul
+      %li
+        %a{ :href=>"#detalhado"}
+          %span Detalhado
+      %li
+        %a{ :href=>"#por_clinica"}
+          %span Por clínica
+      %li
+        %a{ :href=>"#por_dentista"}
+          %span Por dentista
+    #detalhado
+      = render :partial=>"aproveitamento_detalhado"  
+    #por_clinica
+      = render :partial=>"aproveitamento_por_clinica"  
+    #por_dentista
+      = render :partial=>"aproveitamento_por_dentista"  

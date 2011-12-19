@@ -1,0 +1,79 @@
+<% content_for :main do %>
+
+  <%= render :partial => '/layouts/include_senha' %>
+  <fieldset class="fieldset_50">
+    <legend>Relatório de recebimentos</legend>
+    <% form_tag relatorio_recebimentos_path do %>
+      <p class='mensagem_de_erro'><%= @erros %></p>
+      Início : <%= text_field_tag :datepicker ,params[:datepicker], :size=>10  %> 
+      &nbsp;Fim : <%= text_field_tag :datepicker2, params[:datepicker2], :size=>10 %>
+      <%= submit_tag "pesquisar"%>
+      <div>
+        <%= render :partial => "formas_recebimentos/opcoes", :locals=>{:formas=>@formas_recebimento}%>
+      </div>
+    <% end %>
+  </fieldset>
+  <% dados = "#{@titulo};>Data;Paciente;Valor;Observação;Tipo;Dados do Cheque>center;left;right;left;left;left;>" %>
+<table id="tabela" class="tabela">
+    <tr>
+      <th>Data</th>
+      <th width="230px">Paciente</th>
+      <th width="70px">Valor</th>
+      <th width="170px">Observação</th>
+      <th>Tipo</th>
+      <th>Dados do cheque</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+    <% total = 0 %>
+    <% @recebimentos.each do |recebimento| %>
+    <tr >
+      <td align="center"><%=h recebimento.data.to_s_br %></td>
+      <td><%=h recebimento.paciente.nome %></td>
+      <td align="right"><%=h number_to_currency(recebimento.valor.to_f, :unit=>'') %></td>
+      <td><%=h recebimento.observacao %></td>
+      <%  if recebimento.em_cheque? %>
+        <td><%= link_to_function "cheque", "abre_cheque(#{recebimento.cheque.id})" if recebimento.cheque %>
+        <td><%= recebimento.cheque && recebimento.cheque.observacao%></td>
+      <% else %> 
+        <td>&nbsp;</td>
+        <td><%= recebimento.formas_recebimento.nome %></td>
+      <% end %>
+      <td><%= link_to 'editar', edit_recebimento_path(recebimento), :class=>'ui-icon ui-icon-pencil', :title=>'editar' %></td>
+      <td><%= link_to 'excluir', exclusao_recebimento_path(recebimento.id), :class=>'ui-icon ui-icon-trash', :title=>'excluir' if recebimento.pode_excluir? %></td>
+    </tr>
+    <% dados += "#{recebimento.data.to_s_br};#{recebimento.paciente.nome};#{recebimento.valor.real.to_s};#{recebimento.observacao} ;#{recebimento.formas_recebimento.nome}; #{recebimento.cheque && recebimento.cheque.observacao};>" %>
+    <% total += recebimento.valor %>
+    <% end %>
+      <tr>
+        <td colspan="2" align="center">Total</td>
+        <td align="right"><%= total.real %></td>
+        <td colspan="5">&nbsp;</td>
+      </tr>
+    </table>
+
+    <br />
+    <% if @recebimentos_excluidos.size>0 %>
+    <% @total = 0%>
+    <h3>Recebimentos excluidos</h3>
+    <table class="tabela">
+      <tr>
+        <th>Data</th>
+        <th width="180px">Paciente</th>
+        <th width="70px">Valor</th>
+        <th width="120px">Forma</th>
+        <th>Tipo</th>
+        <th>Data exclusão</th>
+        <th>Observação exclusão</th>
+      </tr>
+      <%= render :partial=>"recebimento" , :collection=>@recebimentos_excluidos %>
+      <tr>
+        <td colspan="2" align="center">Total</td>
+        <td align="right"><%= number_to_currency(@total.real, :unit => '') %></td>
+        <td colspan="4">&nbsp;</td>
+      </tr>
+    </table>
+    <% end %>
+    <%= link_de_impressao(dados, session[:clinica_id], 'landscape')%>
+
+  <% end %>

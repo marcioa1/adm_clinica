@@ -1,0 +1,28 @@
+<% form_for(@item_tabela) do |f| %>
+  <%= f.error_messages %>
+
+    <%= f.hidden_field :tabela_id %>
+  <div>
+    <%= f.label :código %>
+    <%= f.text_field :codigo, :size=>9 %>
+  </div>
+  <div>
+    <%= f.label :descrição %>
+    <%= f.text_field :descricao, :size=>30 %>
+  </div>
+  <div>
+    <%= f.label  :preço %>
+    <%= f.text_field :preco, :size=>8 %>
+  </div>
+  <div>
+    <%= f.check_box :ativo %>
+    <%= f.label :ativo %>
+  </div>
+   <div>
+    <%= f.label :dias_de_retorno %>
+    <%= f.text_field :dias_de_retorno, :size=>4 %>
+   </div>
+  <div>
+    <%= f.submit 'Criar' %>
+  </div>
+<% end %>

@@ -1,0 +1,151 @@
+- if current_user.master?
+  = link_to "Novo abono", new_abono_path(:paciente_id => @paciente ) if current_user.pode_alterar_na_clinica?
+  |
+
+- if !@clinica_atual.administracao?
+  = link_to "Novo recebimento", new_recebimento_path(:paciente_id=>@paciente.id)if current_user.pode_alterar_na_clinica?
+  | 
+  = link_to "Novo débito", new_debito_path(:paciente_id=>@paciente.id) if current_user.pode_alterar_na_clinica?
+
+- dados = "Extrato do paciente #{@paciente.nome}>Data;Descrição;Débito;Crédito;Saldo>center;left;right;right;right>"
+%p
+%table{:class=>'tabela'}
+  %tr
+    %th Data
+    %th{ :width => "200px" } Descrição
+    %th{ :width => "70px" } Débitos
+    %th{ :width => "70px" } Crédito
+    %th{ :width => "70px" } Saldo
+    %th Bom para
+    %th Detalhes
+    - if @paciente.ortodontia?
+      %th Percentual
+    %th &nbsp;
+    - if current_user.master?
+      %th &nbsp;
+  
+  - saldo         = 0.0
+  - total_debito  = 0.0
+  - total_credito = 0.0
+  - @paciente.extrato.each do |lancamento|
+    %tr{ :class=>"#{lancamento.is_a?(Abono) ? 'abono': lancamento.is_a?(Debito) ? lancamento.cancelado? ? 'cancelado' : 'debito' : ''}"}
+      - if lancamento.is_a? Abono
+        - total_credito += lancamento.valor
+        %td{ :align => "center" }
+          - if lancamento.pode_alterar?(current_user)
+            = link_to lancamento.data.to_s_br, edit_abono_path(lancamento)
+          - else
+            = lancamento.data.to_s_br
+        - dados += "#{lancamento.data.to_s_br};"
+        %td
+          = lancamento.observacao
+        - dados += "#{lancamento.observacao};"
+        %td
+          &nbsp;
+        %td{ :align => "right" }
+          = lancamento.valor.real
+        - dados += "#{lancamento.valor.real};"
+        - saldo += lancamento.valor
+        - cor =  saldo >= 0 ? "black" : "red"
+        %td{ :align => "right", :style => "color: #{cor}" }
+          = saldo.real
+        - dados += "#{saldo.real};>"
+        - 4.times do
+          %td &nbsp;
+        - if current_user.master?
+          %td &nbsp;
+
+      - elsif lancamento.is_a? Debito
+        %td{ :align => "center" }
+          - if lancamento.pode_alterar?
+            = link_to lancamento.data.to_s_br, edit_debito_path(lancamento)
+          - else
+            = lancamento.data.to_s_br
+          - dados += "#{lancamento.data.to_s_br};"
+          - total_debito += lancamento.valor
+        %td
+          = lancamento.descricao
+        - dados += "#{lancamento.descricao};"
+        %td{ :align => "right" }
+          = lancamento.valor.real
+        - dados += "#{lancamento.valor.real};"
+        %td
+          &nbsp;
+        - saldo -= lancamento.valor #if !lancamento.cancelado?
+        %td{ :align => "right" }
+          = saldo.real
+        - dados += ";#{saldo.real}>"
+        %td &nbsp;
+        %td &nbsp;
+        - if @paciente.ortodontia?
+          %td &nbsp;
+        - if lancamento.pode_excluir? || @current_user.master?
+          %td
+            = link_to 'Excluir', lancamento, :confirm => 'Tem certeza da exclusão deste débito ?', :method => :delete , :class=>'ui-icon ui-icon-trash', :title=>'excluir'
+        - else
+          %td &nbsp;
+        - if current_user.master?
+          %td &nbsp;     
+          
+      - elsif lancamento.is_a?(Recebimento)
+        - total_credito += lancamento.valor
+        %td{ :align => "center" }
+          - if lancamento.pode_alterar?
+            = link_to lancamento.data.to_s_br, edit_recebimento_path(lancamento)
+          - else
+            = lancamento.data.to_s_br
+        - dados += "#{lancamento.data.to_s_br};"
+        %td
+          = lancamento.observacao_do_recebimento
+        - dados += "#{lancamento.observacao_do_recebimento};"
+        %td
+          &nbsp;
+        %td{ :align => "right" }
+          = lancamento.valor.real
+        - dados += ";#{lancamento.valor.real};"
+        - saldo += lancamento.valor
+        - cor =  saldo >= 0 ? "black" : "red"
+        %td{ :align => "right", :style => "color: #{cor}" }
+          = saldo.real
+        - dados += "#{saldo.real}>"
+        - if lancamento.formas_recebimento && lancamento.formas_recebimento.nome.downcase == 'dinheiro'
+          %td
+            &nbsp;
+
+        - else
+          %td
+            = link_to lancamento.cheque.bom_para.to_s_br, lancamento.cheque, :target => :blank  if lancamento.cheque.present? && lancamento.cheque.bom_para.present? && lancamento.cheque.pode_alterar?(current_user)
+
+        %td
+          = lancamento.formas_recebimento.nome if lancamento.formas_recebimento
+        - if @paciente.ortodontia?
+          %td{:align => "center"}= lancamento.percentual_dentista
+        
+        - if lancamento.pode_excluir?
+          %td
+            = link_to 'Excluir', exclusao_recebimento_path(lancamento.id) , :class=> 'ui-icon ui-icon-trash', :title=>'excluir'
+        - else
+          %td &nbsp;
+        - if current_user.master?
+          - if lancamento.liberado_para_alteracao?
+            %td= link_to "fechar", close_alteraco_path(:tabela => 'recebimentos', :id_registro => lancamento.id),:class=>'ui-icon ui-icon-unlocked'
+          - else
+            %td= link_to "liberar", new_alteraco_path(:tabela => 'recebimentos', :id_registro => lancamento.id),:class=>'ui-icon ui-icon-locked'
+
+  %tr
+    %td{ :align => "center", :colspan => "2" }
+      Total
+    %td{ :align => "right" }
+      = total_debito.real
+    %td{ :align => "right" }
+      = total_credito.real
+    - cor =  saldo >= 0 ? "black" : "red"
+    %td{ :align => "right", :style => "color: #{cor}" }
+      = saldo.real
+    %td{ :colspan => "4" }
+      &nbsp;
+    - dados += ";Total;#{total_debito.real};#{total_credito.real};#{saldo.real}>"
+= link_de_impressao(dados)
+= render :partial => 'cheques/cheques_do_paciente' if !@paciente.cheques.empty?
+= render :partial => 'cheques/devolvidos_do_paciente' if !@paciente.cheques_devolvidos.empty?
+= render :partial=>"recebimentos/recebimentos_excluidos", :locals=>{:paciente => @paciente} if !@paciente.recebimentos_excluidos.empty?

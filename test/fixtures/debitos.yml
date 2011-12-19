@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  paciente: marcio
+  tratamento_id: 1
+  valor: 30
+  descricao: tratamento do marcio
+
+two:
+  paciente: marcio
+  tratamento_id: 2
+  valor: 40
+  descricao: MyString

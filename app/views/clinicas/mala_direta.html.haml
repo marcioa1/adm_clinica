@@ -1,0 +1,91 @@
+- content_for :main do
+  
+  
+  #paciente_id{:style=>'display:none;'}
+  #termo{:style=>'display:none;'}
+  #partial
+  %h2
+    Mala-direta
+  = link_to_function 'Imprime', "window.location = '/clinicas/gera_arquivo_de_mala_direta'"
+  %table{:class=>'tabela'}
+    %tr
+      %th{:width=>'22px'}= "Sel."
+      %th= "Nome"
+      %th= "Rua"
+      %th{:width=>'120px'}= "Bairro"
+      %th= "Cidade/UF"
+      %th= "Cep"
+      %th &nbsp;
+    - @pacientes.each do |pac|
+      %tr
+        %td= check_box_tag "paciente_#{pac.id}", true,true
+        %td= link_to pac.nome, abre_paciente_path(pac)
+        %td{:id=>"td_#{pac.id}"}= pac.logradouro
+        %td= pac.bairro 
+        %td= pac.cidade + "/" + pac.uf if pac.cidade && pac.uf
+        %td{:id=>"cep_#{pac.id}"}= pac.cep
+        %td= button_to_function "busca", "busca_cep(#{pac.id});" 
+
+  %br
+    = will_paginate @pacientes
+      
+  :javascript
+  
+    function selecionar_cep(id){
+      $("#"+ cep_id).html(id);
+      $("#partial").html('');
+      $.ajax({
+        url  : "/pacientes/" +  $("#paciente_id").html() + "/altera_cep",
+        data : {cep: id},
+        type : "GET",
+        success :function(data){
+          alert('cep alterado com sucesso');
+        }
+      });    
+    }
+
+    function busca_cep(id){
+      $("#paciente_id").html(id);
+      cep_id = 'cep_' + id;
+      $.ajax({
+        url  : "/busca_pelo_logradouro",
+        data : {logradouro: $("#termo").html()},
+        type : "GET",
+        success :function(data){
+          $("#partial").html(data);
+        }
+      });
+    }
+
+    var cep_id = '';
+    
+  
+    if(!window.Kolich){
+      Kolich = {};
+    }
+
+    Kolich.Selector = {};
+    // getSelected() was borrowed from CodeToad at
+    // http://www.codetoad.com/javascript_get_selected_text.asp
+    Kolich.Selector.getSelected = function(){
+      var t = '';
+      if(window.getSelection){
+        t = window.getSelection();
+      }else if(document.getSelection){
+        t = document.getSelection();
+      }else if(document.selection){
+        t = document.selection.createRange().text;
+      }
+      return t;
+    }
+			
+    Kolich.Selector.mouseup = function(){
+      var st = Kolich.Selector.getSelected();
+      if(st!=''){
+        $("#termo").html(st + '');
+      }
+    }
+			
+    $(document).ready(function(){
+      $(document).bind("mouseup", Kolich.Selector.mouseup);
+    });

@@ -1,0 +1,39 @@
+<% content_for :main do %>
+<h3>Listando items da tabela <%= @tabela.nome %></h3>
+<p>
+  <%= link_to "Voltar à lista de tabelas", tabelas_path()%> | 
+  <%= link_to 'Novo item da tabela', new_item_tabela_path(:tabela_id=>@tabela.id) if current_user.pode_incluir_tabela and current_user.pode_alterar_na_clinica?%>
+<fieldset>
+  <%= render :partial => 'form' , :locals=> {:tabela_id => @tabela.id}%>
+</fieldset>
+</p>
+<table class='tabela'>
+  <tr>
+    <th width="80px">Código</th>
+    <th width="250px">Descrição</th>
+    <th width='60px'>Preço</th>
+    <th>Ativo</th>
+    <th>Dias de retorno</th>
+    <th>Custo de protético</th>
+    <th>&nbsp;</th>
+    <th>&nbsp;</th>
+  </tr>
+
+<% @item_tabelas.each do |item_tabela| %>
+  <tr>
+    <td><%=h item_tabela.codigo %></td>
+    <td><%=  item_tabela.descricao %></td>
+    <td align='right'><%=h item_tabela.preco.real %></td>
+    <td><%=h sim_nao(item_tabela.ativo) %></td>
+    <td align='center'><%= item_tabela.dias_de_retorno %></td>
+    <td align='center'><%= sim_nao(item_tabela.tem_custo_de_protetico?) %></td>
+    <td><%= link_to "editar", edit_item_tabela_path(item_tabela), :class=>"ui-icon ui-icon-pencil" %></td>
+    <td><%= link_to 'Excluir', item_tabela, :confirm => 'Tem certeza?', :method => :delete, :class => 'ui-icon ui-icon-trash', :title=>'Excluir'  %></td>
+    
+  </tr>
+<% end %>
+</table>
+
+<br />
+<%= link_to "Voltar à lista de tabelas", tabelas_path()%> | 
+<% end %>

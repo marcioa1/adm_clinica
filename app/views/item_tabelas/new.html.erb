@@ -1,0 +1,7 @@
+<% content_for :main do %>
+<fieldset>
+    <legend>Novo item da tabela <%= @tabela.nome %></legend>
+<%= render :partial => 'form' %>
+<%= link_to 'Voltar', item_tabelas_path(:tabela_id=>@tabela.id) %>
+</fieldset>
+<% end %>

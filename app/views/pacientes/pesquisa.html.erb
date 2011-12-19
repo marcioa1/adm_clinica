@@ -1,0 +1,77 @@
+<% content_for :main do%>
+<style type='text/css'>
+    .ui-autocomplete {
+      max-height: 180px;
+      overflow-y: auto;
+    }
+</style>
+<script type="text/javascript">
+  $(function() {
+      function busca_por_nome(nome){
+        window.location = "/pacientes/0/abre?nome=" + nome;
+      }
+
+      $("#iniciais").keypress(function(keycode){
+        if (keycode.which == 13 && $("#iniciais").val().length>3){
+          $.ajax({
+            url: '/pacientes/pesquisa_nomes',
+            data: {term : $("#iniciais").val()},
+            type: "GET",
+            success: function(data){
+              $("#nomes").empty();
+              $("#nomes").html(data);
+            }
+            
+          });
+        }
+      });
+
+      $("#iniciais2").autocomplete({
+        source: "pesquisa_nomes",
+        minLength: 5,
+        maxRows: 7,
+        select: function(event,ui){
+          nome = ui.item.value;
+          busca_por_nome(nome);
+          $.cookies.del('tab_paciente');
+          return false;
+        },
+        focus: function(e,ui){
+          return false;
+        },
+      });
+    });
+    
+    function busca_pacientes_pelas_iniciais(){
+      $.ajax({
+        get :"pacientes/pesquisa_nomes",
+        data :{ term :$("#iniciais").val()},
+        success :function(data){
+          alert(data);
+        }
+      });
+    }
+</script>
+<div>
+  <% form_tag pesquisa_pacientes_path do %>
+    <div>
+      <label>Código : </label>
+      <%= text_field_tag :codigo, params[:codigo], :size=>8, :onblur=>"$('#pesquisar_button').attr('disabled',true); )", :onfocus=>"limpa_nome();" %>&nbsp;&nbsp;<%= submit_tag "pesquisar pelo código", :disabled=>false, :id=>"pesquisar_button" %>
+    </div>
+    <div>
+      <label>Paciente : </label>
+      <span class="ui-widget">
+        <input id="iniciais" size="40" class="">
+        <ul id="nomes"></ul>
+      </span>
+    </div>
+  <% end %>
+</div>
+
+
+<p>
+    <% @pacientes.each do |paciente| %>
+      <%= link_to paciente.nome_e_clinica(@clinica_atual.administracao?), abre_paciente_path(:id=>paciente.id) %><br/>
+    <% end %>
+</p>
+<% end %>

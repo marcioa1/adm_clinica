@@ -1,0 +1,28 @@
+body{
+    background :#FFFFFF;
+}
+#logo{
+    margin-left: 5em;
+    margin-top: 2em;
+}
+#principal{
+    margin-top:0em;
+    margin-left:0em;
+    margin-bottom:0em;
+    padding-top: 5em;
+    padding-left: 5em;
+    padding-bottom: 4em;
+    padding-right: 3em;
+    background :#AAAAAA;
+    width: 15.2em;
+}
+#rodape{
+    background: #1C4EA3;
+    margin-left:0em;
+    width: 38.2em;
+    text-align: center;
+    color: white;
+}
+#rodape a{
+    color :#A92500;
+}

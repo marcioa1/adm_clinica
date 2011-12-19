@@ -1,0 +1,28 @@
+<% content_for :main do %>
+<h3>Pacientes fora da lista de débito</h3>
+<fieldset>
+<% form_tag :url=>pacientes_fora_da_lista_debitos_path do %>
+  Entre : <%= text_field_tag :datepicker , @data_inicial.to_s_br, :size=>10 %>
+  &nbsp;&nbsp; e : <%= text_field_tag :datepicker2 , @data_final.to_s_br, :size=>10 %>
+  <%= submit_tag "pesquisar"%>
+<% end %>
+</fieldset>
+<p/>
+<table class='tabela'>
+  <tr>
+    <th>Nome</th>
+    <th>Data de saída da lista</th>
+    <th>Motivo da saída</th>
+  </tr>
+<% dados = "#{@titulo}"%>
+<% @pacientes.each do |pac| %>
+  <tr>
+    <td><%= pac.nome %></td>
+    <td align='center'><%= pac.data_da_saida_da_lista_de_debitos.to_s_br %></td>
+    <td><%= pac.motivo_sair_da_lista_de_debitos %></td>
+  </tr>
+  <% dados += "#{pac.nome};#{pac.data_da_saida_da_lista_de_debitos.to_s_br};#{ pac.motivo_sair_da_lista_de_debitos};>"%>
+<% end %>
+</table>
+<%= link_de_impressao(dados) %>
+<% end %>

@@ -1,0 +1,67 @@
+<% content_for :main do %>
+<fieldset class="fieldset_50">
+<legend>Editando pagamento <%= @pagamento.id %></legend>
+
+<% form_for(@pagamento) do |f| %>
+  <%= f.error_messages %>
+<div id="valor_restante" class="direita">
+<p><%= f.label :valor_restante %>
+	<%= f.text_field :valor_restante_br, :size=>9 %></p>
+	<p>
+	  <%= f.radio_button :opcao_restante,  0, :onclick=>"cheque(0);"%> sem restante<br/>
+	  <%= f.radio_button :opcao_restante,  1, :onclick=>"cheque(1);" %> pago em cheque<br/>
+	  <%= f.radio_button :opcao_restante, 2, :onclick=>"cheque(0);" %> pago em dinheiro<br/>
+	  <%= f.radio_button :opcao_restante, 3, :onclick=>"cheque(0);"%> fica devendo<br/>
+	  <%= f.radio_button :opcao_restante, 4, :onclick=>"cheque(0);"%> ignora restante<br/>
+	  <%= f.radio_button :opcao_restante, 5, :onclick=>"cheque(0);"%> recebe_troco<br/>
+	</p>
+</div>
+
+  <div>
+    <%= f.label :tipo_de_pagamento %> : 
+	  <%= f.select :tipo_pagamento_id, @tipos_pagamento %>
+  </div>
+  <div>
+    <%= f.label :data_de_pagamento %> : 
+     <%= f.text_field :data_de_pagamento_pt , :class=>'datepicker',  :size=>10 %>
+  </div>
+  <div>
+    <%= f.label :valor_pago %> :
+    <%= f.text_field :valor_pago_real, :size=>10 %>
+  </div>
+  <div>
+    <%= f.label :observação %> : 
+    <%= f.text_field :observacao %>
+  </div>
+  <p>
+    <%= f.check_box :nao_lancar_no_livro_caixa %>
+    <%= f.label :não_lançar_no_livro_caixa %>
+  </p>
+  <div id="cheque_classident" style="display:none">
+	<fieldset>
+	  <legend>Cheque da classident</legend>
+	  <div>
+            <%= f.label :conta %> : 
+            <%= f.select :conta_bancaria_id, @contas_bancarias %>
+          </div>
+          <div>
+            <%= f.label :n_cheque %> : 
+            <%= f.text_field :numero_do_cheque, :size=>7 %>
+          </div>
+          <div>
+            <%= f.label :valor %> : 
+            <%= f.text_field :valor_cheque_br, :size=>8 %>
+          </div>
+	</fieldset>
+  </div>
+  <%= hidden_field_tag :cheques_ids, @ids_cheques %>
+
+  <p>
+    <%= f.submit 'alterar' if current_user.pode_alterar_na_clinica? %>
+  </p>
+<% end %>
+<%= render :partial=>"cheques/disponiveis", :locals => {:pagamento => @pagamento }%>
+
+<%= link_to 'voltar', session[:origem] %>
+</fieldset>
+<% end %>

@@ -1,0 +1,45 @@
+<div>
+  <%= form.label :login %> : 
+  <%= form.text_field :login , :size=>10%>
+</div>
+<div>
+<%= form.label :nome %> :
+<%= form.text_field :nome%>
+</div>
+<div>
+<%= form.label :email %> :
+<%= form.text_field :email%>
+</div>
+<div>
+<%= form.label :tipo_usuario %> :
+<%= form.select :tipo_usuario_id, @tipos_usuario %>
+</div>
+<div>
+  <fieldset class = 'fieldset_50'>
+  <legend>Clínicas :</legend>
+<% @clinicas.each do |clinica| %>
+  <%= check_box_tag "clinica_#{clinica.id}", false, checked = @user.clinicas.map(&:id).include?(clinica.id) %>
+  <%= clinica.nome %>
+<% end %>
+  </fieldset>
+</div>
+
+<br/><br/>
+<%= form.check_box :ativo %>
+<%= form.label :ativo %>
+<p/>
+<fieldset class = 'fieldset_40'>
+  <legend>Horários :</legend>
+  <table class  = 'transparente'>
+  <% (0..6).each do |dia| %>
+  <tr>
+    <td><%= form.check_box "dia_da_semana_#{dia}"%></td>
+    <td><%= form.label Date::DAYNAMES[dia] %>  </td>
+    <td><%= form.label :Início %> : </td>
+    <td><%= form.time_select "hora_de_inicio_"+ dia.to_s %></td>
+    <td><%= form.label :Término %> : </td>
+    <td><%= form.time_select "hora_de_termino_#{dia.to_s}" %></td>
+  </tr>
+  <% end %>
+</table>
+</fieldset>

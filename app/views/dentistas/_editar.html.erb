@@ -1,0 +1,42 @@
+<fieldset class="fieldset_40">
+
+<% form_for(@dentista) do |f| %>
+  <%= f.error_messages %>
+
+  <div>
+    <%= f.label :nome %> : 
+    <%= f.text_field :nome %>
+  </div>
+  <div>
+    <%= f.label :CRO %> : 
+    <%= f.text_field :cro, :size=>10 %>
+  </div>
+  <div>
+    <%= f.label :telefone %> : 
+    <%= f.text_field :telefone %>
+  </div>
+  <div>
+    <%= f.label :celular %> : 
+    <%= f.text_field :celular %>
+  </div>
+  <div>
+    <%= f.label :especialidade %> : 
+    <%= f.text_field :especialidade, :size=>20 %>
+  </div>
+  <div>
+    <%= f.label :percentual %> : 
+    <%= f.text_field :percentual, :size=>4 %> %
+  </div>
+  <p>
+    <%= f.check_box :ativo %>
+    <%= f.label :ativo %>
+    &nbsp;&nbsp;&nbsp;
+     <%= f.check_box :ortodontista %><%= f.label :ortodontista %>
+  </p>
+  <p>
+    <%= f.submit 'alterar' if current_user.master? %>
+  </p>
+<% end %>
+</fieldset><br/>
+<%= link_to 'voltar', dentistas_path %>
+

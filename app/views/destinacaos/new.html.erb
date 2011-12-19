@@ -1,0 +1,18 @@
+<% content_for :main do%>
+  <h3>Nova destinação</h3>
+
+  <% form_for(@destinacao) do |f| %>
+    <%= f.error_messages %>
+
+    <p>
+      <%= f.label :nome %><br />
+      <%= f.text_field :nome %>
+    </p>
+
+    <p>
+      <%= f.submit 'Salvar' %>
+    </p>
+  <% end %>
+
+  <%= link_to 'voltar', destinacaos_path %>
+<% end %>

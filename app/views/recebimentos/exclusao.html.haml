@@ -1,0 +1,18 @@
+- content_for :main do
+  %fieldset
+    %legend Exclusão de recebimento
+    - if @recebimento.valor != @recebimento.cheque.valor && @recebimento.cheque.present?
+      = "Este cheque também foi usado para este(s) paciente(s) : #{@recebimento.cheque.nome_dos_outros_pacientes(@recebimento.id)}. A exclusão deste cheque excluirá os recebimentos dos mesmos."
+    %p
+      Valor : 
+      = @recebimento.valor.real
+    %p
+    Forma :
+    = @recebimento.formas_recebimento.nome
+    - form_tag exclui_recebimento_path do 
+      %div
+        = label_tag 'justificativa : '
+        = text_field_tag :observacao_exclusao
+      %div
+        = submit_tag "Excluir"
+        = link_to 'voltar', :back

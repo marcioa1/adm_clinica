@@ -1,0 +1,148 @@
+<div>
+<%= f.label :nome %> : 
+<% if @paciente.new_record? %>
+  <%= f.text_field :nome, :size=>60 , :onblur=>'verifica_se_tem_paciente_com_este_nome();'%>
+<% else %>
+  <%= f.text_field :nome, :size=>60%>
+  <% end %>
+</div>
+<div>
+<%= f.label :tabela_id %> : 
+<%= f.select :tabela_id, @tabelas %>
+</div>
+<div>
+<%= f.label :inicio_de_tratamento %> :
+<%= f.text_field :inicio_tratamento_br, :size=>10, :class=>'datepicker' %>
+  </div>
+  <div>
+	<%= f.label :cep %> :
+    <%= f.text_field :cep, :size=>10 %>
+  </div>
+  <div> 
+    <%= f.label :logradouro %> : 
+    <%= f.text_field :logradouro, :size=>60 %>
+  </div>
+  <div>
+    <%= f.label :numero %> :  <%= f.text_field :numero , :size=>10%>
+    </div>
+    <div>
+    <%= f.label :complemento %> : <%= f.text_field :complemento, :size=>10 %>
+  </div>
+  <div>
+    <%= f.label :bairro %> : 
+    <%= f.text_field :bairro, :size=>20 %>
+    </div>
+    <div>
+	<%= f.label :cidade %> : 
+    <%= f.text_field :cidade %>
+    </div>
+    <div>
+    <%= f.label :uf %> :
+    <%= f.text_field :uf, :size=>3 %>
+  </div>
+  <div>
+    <%= f.label :telefone %> :
+    <%= f.text_field :telefone, :size=>22 %>
+  </div>
+  <div>
+    <%= f.label :celular %> :
+    <%= f.text_field :celular , :size=>22%>
+  </div>  
+  <div>
+    <%= f.label :email %> : 
+    <%= f.text_field :email, :size=>100 %>
+  </div>
+  <div>
+    <%= f.label :nascimento %> :
+<%= f.date_select :nascimento, options={:start_year=>1910, :order=>[:day, :month, :year] }%>
+  </div>
+  <div>
+    <%= f.label :cpf %> :
+    <%= f.text_field :cpf, :size=>12 %>
+  </div>
+  <div>
+    <%= f.label :sexo %> :
+    <%= f.radio_button :sexo, :m %> Masc
+    <%= f.radio_button :sexo, :f %> Fem
+   </div>
+  <div>
+  	<%= f.label :indicacao %> :
+    <%= f.select :indicacao_id, @indicacoes, :include_blank=>true %>
+  </div>
+  <div>
+  	<%= f.label :indicado_por %> :
+    <%= f.text_field :indicado_por, :size=> 40 %>
+  </div>
+  <div>
+    <%= f.label :profissão %> :
+    <%= f.text_field :profissao, :size => 40 %>
+  </div>
+  <fieldset class="fieldset_40">
+  <legend><%= f.check_box :ortodontia %> <%= f.label :Paciente_de_ortodontia %></legend>
+  <table class='transparente'>
+    <tr>
+      <td align='right'><%= f.label :valor_da_mensalidade%> : </td><td><%= f.text_field :mensalidade_de_ortodontia_br, :size=>8 %> </td>
+    </tr>
+    <tr>
+      <td align='right'><%= f.label :ortodontista %> : </td><td><%= f.select :ortodontista_id, @ortodontistas , :include_blank=>true %></td>
+    </tr>
+	    <tr><td align='right'><%= f.label 'Suspender cobrança de orto a partir de'%> : </td>
+		     <td>    
+      		<% if current_user.master? %>
+        		<%= text_field_tag :datepicker3, @paciente.data_da_suspensao_da_cobranca_de_orto, :size=>8 %>
+          <% else %>
+            <%= @paciente.data_da_suspensao_da_cobranca_de_orto &&  @paciente.data_da_suspensao_da_cobranca_de_orto.to_s_br %>
+         <% end %> 
+         </td>
+	    </tr>
+    <tr> 
+      <td align='right'><%= f.label :motivo_da_suspensão_da_cobrança%> : </td>
+      <td>
+        <% if current_user.master? %>
+          <%= f.text_field :motivo_suspensao_cobranca_orto , :size=>20 %>
+        <% else %>
+          <%= @paciente.motivo_suspensao_cobranca_orto %>
+        <% end %>
+      </td></tr>
+          
+  </table>
+  </fieldset>
+  <fieldset class="fieldset_40">
+    <legend>
+	  <% if current_user.master?  %>
+      <%= f.check_box :sair_da_lista_de_debitos  %> 
+    <% else %>
+      <%= f.check_box :sair_da_lista_de_debitos,  :disabled => 'disabled'  %> 
+    <% end %>
+<%= f.label :sair_da_lista_de_débito %>
+    </legend>
+    <p>
+      <%= f.label :data_da_saída_da_lista_de_débitos %> :
+      <% if current_user.master?  %>
+        <%= text_field_tag :datepicker4, @paciente.data_da_saida_da_lista_de_debitos.to_s_br , :size=>10 %>
+      <% else %>
+        <%= @paciente.data_da_saida_da_lista_de_debitos.to_s_br %>
+      <% end %>
+    </p>
+    
+    <p>
+      <%= f.label :motivo_para_sair_da_lista_de_debitos%> : 
+      <% if current_user.master? %>
+        <%= f.text_field :motivo_sair_da_lista_de_debitos%>
+      <% else %>
+        <%= @paciente.motivo_sair_da_lista_de_debitos %>
+      <% end %>
+    </p>
+  </fieldset>
+  
+    <fieldset class="fieldset_40">
+    <legend>
+      <%= f.check_box :arquivo_morto  %> 
+      <%= f.label :arquivo_morto %>
+    </legend>
+    <p>
+        <%= f.label :motivo %> :
+        <%= f.text_field :descricao_arquivo_morto, :size=>50 %>
+    </p>
+    
+  </fieldset>

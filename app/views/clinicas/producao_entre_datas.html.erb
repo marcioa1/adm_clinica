@@ -1,0 +1,53 @@
+<% content_for :main do %>
+  <%= render :partial => '/layouts/include_senha' %>
+
+<div id="titulo">
+Produção entre datas
+</div>
+
+<% form_tag :url=>producao_entre_datas_clinicas_path do |f| %>
+  <%= render :partial=>'entre_datas' , :locals=>{:f=>f}%>
+<% end %>
+<br/>
+<% total_valor = 0.0 %>
+<% total_custo = 0.0 %>
+<% total_dentista = 0.0 %>
+<% total_clinica = 0.0 %>
+<table class='tabela'>
+	<tr>
+		<th width="400px">Nome</th>
+		<th width="60px">Percentual</th>
+		<th width="100px">Valor</th>
+		<th width="100px">Custo</th>
+		<th width="100px">Dentista</th>
+		<th width="100px">Clínica</th>
+	</tr>
+<% dados = "#{@titulo};>Nome;Percentual;Valor;Custo;Dentista;Clínica>left;right;right;right;right>"%>
+<% @valores.each do |v| %>
+	<tr>
+		<% valores = v .split("/")%>
+		<td><%= link_to valores[5], abre_dentista_path(valores[6])  %></td>
+		<td align='right'><%= valores[0] %></td>
+		<td align='right'><%= valores[1].to_d.real %></td>
+		<td align='right'><%= valores[2].to_d.real %></td>
+		<td align='right'><%= valores[3].to_d.real %></td>
+		<td align='right'><%= valores[4].to_d.real %></td>
+		<% dados += "#{valores[5]};#{valores[0]};#{valores[1].to_d.real};#{valores[2].to_d.real};#{valores[3].to_d.real};#{valores[4].to_d.real};>"%>
+		<% total_valor += valores[1].to_f %>
+		<% total_custo += valores[2].to_f %>
+		<% total_dentista += valores[3].to_f %>
+		<% total_clinica += valores[4].to_f %>
+	</tr>
+<% end %>
+<tr>
+	<td>Total</td>
+	<td> &nbsp;</td>
+	<td align='right'><%= total_valor.real %></td>
+	<td align='right'><%= total_custo.real %></td>
+	<td align='right'><%= total_dentista.real %></td>
+	<td align='right'><%= total_clinica.real %></td>
+	<% dados += "Total;;#{total_valor.real};#{total_custo.real};#{total_dentista.real};#{total_clinica.real};>"%>
+</tr>
+</table>
+<%= link_de_impressao (dados)%>
+<% end %>

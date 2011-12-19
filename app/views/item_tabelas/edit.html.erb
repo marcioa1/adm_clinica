@@ -1,0 +1,43 @@
+<% content_for :main do %>
+<fieldset>
+    <legend>Editando item da tabela  <%= @tabela.nome %></legend>
+<% form_for(@item_tabela) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :código %><br />
+    <%= f.text_field :codigo, :size=>9 %>
+  </p>
+  <p>
+    <%= f.label :descrição %><br />
+    <%= f.text_field :descricao, :size=>30 %>
+  </p>
+  <p>
+    <%= f.label  :preco %>
+    <%= f.text_field :preco, :size=>8 %>
+  </p>
+  <p>
+    <%= f.check_box :ativo %>
+    <%= f.label :ativo %>
+  </p>
+  <p>
+    <%= f.label :descrição_da_conduta %><br/>
+    <%= f.select :descricao_conduta_id, @descricao_condutas , :include_blank=>true%>
+  </p>
+   <p>
+    <%= f.label :dias_de_retorno %><br />
+    <%= f.text_field :dias_de_retorno, :size=>4 %>
+   </p>
+  <p>
+    <%= f.check_box :tem_custo_de_protetico %>
+    <%= f.label :tem_custo_de_protetico %>
+  </p>
+
+  <p>
+    <%= f.submit 'alterar' %>
+  </p>
+<% end %>
+
+<%= link_to 'voltar', item_tabelas_path(:tabela_id=>@tabela.id) %>
+</fieldset>
+<% end %>

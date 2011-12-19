@@ -1,0 +1,14 @@
+<% content_for :main do %>
+<fieldset class='fieldset_50'>
+<legend>Editando orçamento : </legend>
+
+<% form_for(@orcamento) do |f| %>
+  <%= f.error_messages %>
+  <%= render :partial=>'form' , :locals=>{:f=>f, :orcamento=>@orcamento}%>
+<% end %>
+
+<%= link_to 'voltar', abre_paciente_path(:id=>@paciente.id) %>
+<script type="text/javascript">
+  calcula_valor_da_parcela();
+</script>
+<% end %>

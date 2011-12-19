@@ -1,0 +1,21 @@
+<% content_for :main do %>
+<h2>Listando conta bancárias</h2>
+
+<table class='tabela'>
+  <tr>
+	<th width='150px'>Clínica</th>
+    <th width='180px'>Nome</th>
+  </tr>
+
+<% @conta_bancarias.each do |conta_bancaria| %>
+  <tr>
+	<td><%= conta_bancaria.clinica.nome %></td>
+    <td><%= link_to conta_bancaria.nome, edit_conta_bancaria_path(conta_bancaria)  %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'Nova conta bancária', new_conta_bancaria_path %>
+<% end %>

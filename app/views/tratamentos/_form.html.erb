@@ -1,0 +1,103 @@
+<%= javascript_include_tag 'odontograma.js' %>
+<% form_for(@tratamento) do |f| %>
+
+  <%= hidden_field_tag :items, @paciente.tabela.item_tabelas.to_json, :size=>150 %>
+
+  <%= f.hidden_field :paciente_id %>
+  <%= f.error_messages %>
+  <div id="numero_dos_dentes">numero dos dentes</div>
+  <div style="padding-top: 7em;">
+    <%= f.label :dente %> : 
+    <%= f.text_field :dente,  :size=> 12, :class=>'txt' %>
+  </div>
+  <p>
+   <Fieldset class='fieldset_25'>
+    <legend>Faces</legend>
+    <table class='transparente'>
+      <tr>
+        <td><%= f.check_box :mesial, :onclick=>'selecionou_face();' %> Mesial</td>
+        <td><%= f.check_box :distal, :onclick=>'selecionou_face();' %> Distal</td>
+        <td><%= f.check_box :oclusal, :onclick=>'selecionou_face();' %> Oclusal</td>
+        <td><%= f.check_box :palatina, :onclick=>'selecionou_face();' %> Palatina</td>
+      </tr>
+      <tr>
+        <td><%= f.check_box :vestibular, :onclick=>'selecionou_face();' %> Vestibular</td>
+        <td><%= f.check_box :lingual, :onclick=>'selecionou_face();' %> Lingual</td>
+        <td><%= check_box_tag :todas,value='1', checked=false,options={:onclick=> 'todas_as_faces();'} %> Todas</td>
+      </tr>
+    </table>
+   </fieldset>
+  </p>
+  <p>
+  <div id='estado'>
+    <Fieldset  class='fieldset_30'>
+      <legend>Estado</legend>
+      <table class='transparente'>
+        <tr>
+          <td><%= f.radio_button :estado, :ausente, :onclick=>'selecionou_estado();' %> Ausente</td>
+          <td><%= f.radio_button :estado, :incluso, :onclick=>'selecionou_estado();' %> Incluso</td>
+          <td><%= f.radio_button :estado, :exodontia, :onclick=>'selecionou_estado();' %> Exodontia</td>
+          <td><%= f.radio_button :estado, :retentor, :onclick=>'selecionou_estado();' %> Retentor</td>
+        </tr>
+        <tr>
+          <td><%= f.radio_button :estado, :pontico, :onclick=>'selecionou_estado();' %> Pôntico</td>
+          <td><%= f.radio_button :estado, :implante, :onclick=>'selecionou_estado();' %> Implante</td>
+          <td><%= f.radio_button :estado, :endodontia, :onclick=>'selecionou_estado();' %> Endodontia</td>
+          <td><%= f.radio_button :estado, :nucleo, :onclick=>'selecionou_estado();' %> Núcleo</td>
+        </tr>
+      </table>
+<span style='display:none;'><%=f.radio_button :estado, :nenhum %></span>
+    </fieldset>
+  </div>
+  </p>
+  <br/>
+    <%= f.hidden_field :item_tabela_id, :size=>4%>
+  <% if !@tratamento.new_record? %>
+    <div>
+      <%= f.label :Código %> :
+      <%= text_field_tag :codigo , @tratamento.item_tabela && @tratamento.item_tabela.codigo, :size => 12, :class=>'txt'%>
+    </div>
+  <% end %>
+    <div>
+    <%= f.label :procedimento %> : 
+    <%= f.text_field :descricao, :size=>"40", :class=>"txt ui-autocomplete-input" %>
+  </div>
+  <div>
+    <%= f.label :valor %> :
+    <%= f.text_field :valor_pt, :size=>10, :class=>'txt'  %>
+  </div>
+  <% if @tratamento.orcamento && @tratamento.orcamento.desconto > 0 %>
+    <div>
+      <%= f.label :desconto %> : <%= @tratamento.orcamento.desconto %> % <br />
+      <%= f.label :valor_com_desconto %> : <%= @tratamento.valor_com_desconto.real %>
+    </div>
+  <% end %>
+  <div>
+    <%= f.label :custo %> :
+    <%= f.text_field :custo_pt, :size=>10, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :dentista %> :
+    <%= f.select :dentista_id, @dentistas, :include_blank=>true, :class=>'txt' %>
+  </div>
+  <div>
+    <%= f.label :data_de_término %> :
+    <%= f.text_field :data_termino_br, :class => 'datepicker', :size=>10     %>
+  </div>
+  <div>
+    <%= f.label :orçamento %> :
+    <%= f.select :orcamento_id, @tratamento.paciente.orcamentos.collect{ |o| [ o.numero, o.id]}.insert(0, '') %>
+  </div>
+  <div>
+    <%= f.submit "salvar e fechar" if (!@tratamento.data || (@tratamento.pode_alterar? || @tratamento.liberado_para_alteracao? )) && current_user.secretaria? %>
+    <%= f.submit "salvar e novo" if (@tratamento.id.nil? && (!@tratamento.data || (@tratamento.data + 15.days > Date.today ))) && current_user.secretaria? %>
+
+  </div>
+<% end %>
+<hr>
+<p>
+  <%= render :partial=>'trabalhos_de_protetico_do_tratamento', :locals=>{:tratamento=>@tratamento} if !@tratamento.new_record? %>
+</p>
+<script type="text/javascript">
+  desenha_numero_dos_dentes();
+</script>

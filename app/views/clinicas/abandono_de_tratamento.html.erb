@@ -1,0 +1,32 @@
+<% content_for :main do %>
+<h3>Abandono de tratamento</h3>
+<% dados = "#{@titulo}>Nome;Telefone;Último registro>left;left;center>"%>
+<p>
+<% form_tag :url=>abandono_de_tratamento_clinicas_path do %>
+  Com tratamento há 
+  <%= text_field_tag :dias_tratamento, params[:dias_tratamento], :size=>4 %> dias mas sem contato há 
+  <%= text_field_tag :dias_sem_contato, params[:dias_sem_contato], :size=>4 %>
+  <%= submit_tag "pesquisar" %>
+<% end %>
+</p>
+<p>
+<%= @abandonos.size %> pacientes selecionados
+</p>
+<table class='tabela'>
+  <tr>
+    <th>Nome</th>
+    <th>Telefones</th>
+    <th>Último registro</th>
+  </tr>
+<% @abandonos.each do |abandono| %>
+  <tr>
+    <td><%= link_to abandono[:nome], abre_paciente_path(abandono[:id]) %></td>
+    <td><%= abandono[:telefone] %></td>
+    <td align='center'><%= abandono[:ultima_intervencao].to_s_br %></td>
+  </tr>
+  <% dados += "#{abandono[:nome]};#{abandono[:telefone]};#{abandono[:ultima_intervencao].to_s_br}>"%>
+
+<% end %>
+</table>
+<%= link_de_impressao(dados) %>
+<% end %>

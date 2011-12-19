@@ -1,0 +1,19 @@
+--- 
+javascripts: 
+- base: 
+  - ui.datepicker-pt-BR
+  - select_boxes
+  - jrails
+  - jquery.price_format.1.0
+  - jquery.loading.1.6.4.min
+  - application
+  - jquery.cookies.2.2.0
+stylesheets: 
+- base: 
+  - adm
+  - jquery.loading.1.6
+  - jquery
+  - jquery.ui.core
+  - jquery.ui.autocomplete
+  - jquery.ui.tabs
+  - jquery.ui.datepicker

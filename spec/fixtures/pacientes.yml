@@ -1,0 +1,14 @@
+
+marcio:
+  nome: 'marcio aun migueis'
+  codigo: '1'
+  clinica_id: 5
+  tabela_id: 1
+  ortodontia: false
+  
+ana:
+  nome: Ana Paula
+  codigo: 2
+  clinica_id: 5
+  tabela_id: 1
+  ortodontia: true

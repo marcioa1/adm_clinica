@@ -1,0 +1,55 @@
+ID:<%=h @pagamento.id %>
+<p>
+  <b>Tipo de pagamento</b>
+  <%=h @pagamento.tipo_pagamento.nome %>
+</p>
+<p>
+  <b>Data de pagamento:</b>
+  <%=h @pagamento.data_de_pagamento.to_s_br %>
+</p>
+<% if !@pagamento.dentista.nil? %>
+<p>
+  <b>Dentista :</b>
+  <%=h @pagamento.dentista.nome %>
+</p>
+<% end %>
+
+<p>
+  <b>Valor pago:</b>
+  <%=h @pagamento.valor_pago.real %>
+</p>
+<% if @pagamento.valor_restante && @pagamento.valor_restante > 0 %>
+  <p>
+    <b>Valor restante:</b>
+    <%=h @pagamento.valor_restante.real %> - 
+    <%=h @pagamento.descricao_opcao_restante %>
+  </p>
+<% end %>
+<p>
+  <b>Modo de pagamento :</b>
+  <%=h @pagamento.modo_de_pagamento %>  
+</p>
+
+<p>
+  <b>Observação:</b>
+  <%=h @pagamento.observacao %>
+</p>
+
+<p>
+  <b>Lançar no livro caixa:</b>
+  <%=h @pagamento.nao_lancar_no_livro_caixa==true ? "n
+ão" : "sim" %>
+</p>
+
+<% if @pagamento.data_de_exclusao.present? %>
+  <p>
+    <b>Data de exclusão:</b>
+    <%=h @pagamento.data_de_exclusao %>
+  </p>
+<% end %>
+
+<%= render :partial=>"pagamentos/cheques_utilizados", :locals=>{:pagamento=>@pagamento} if @pagamento.em_cheque_pacientes? %>
+<%= render :partial=>"pagamentos/cheque_classident" if @pagamento.em_cheque_classident? %>
+<%= render :partial=>"trabalho_proteticos/trabalho_pagamento"%>
+
+<a href="javascript: self.close();">fechar</a>

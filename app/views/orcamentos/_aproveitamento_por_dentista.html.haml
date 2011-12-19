@@ -1,0 +1,36 @@
+%p
+- dados = "Aproveitamento de orçamento entre #{@data_inicial.to_s_br} e #{@data_final.to_s_br} - Por Dentista>Dentista;Em aberto;Aprovado;Total aberto;Total aprovado;% de aproveitamento;>left;right;right;right;right;right;>"
+
+%table{:class=>'tabela'}
+  %tr
+    %th 
+      %br Dentista
+    %th 
+      %br Em aberto
+    %th 
+      %br Aprovado
+    %th 
+      %br Total aberto
+    %th 
+      %br Total aprovado
+    %th 
+      = '% de' 
+      %br aproveitamento
+  - @dentistas.each do |dentista|
+    - unless (@aberto_por_dentista[dentista.id] + @iniciado_por_dentista[dentista.id] ) == 0
+      %tr
+        %td 
+          =dentista.nome 
+        %td{:align=>'right'}  
+          = @aberto_por_dentista[dentista.id]
+        %td{:align=>'right'}  
+          = @iniciado_por_dentista[dentista.id]
+        %td{:align=>'right'} 
+          =  @total_aberto_por_dentista[dentista.id].real
+        %td{:align=>'right'}  
+          = @total_iniciado_por_dentista[dentista.id].real
+        %td{:align=>'right'}  
+          - percentual = (@iniciado_por_dentista[dentista.id] * 100) / (@aberto_por_dentista[dentista.id] + @iniciado_por_dentista[dentista.id] )
+          = percentual
+        - dados += "#{dentista.nome};#{@aberto_por_dentista[dentista.id]};#{@iniciado_por_dentista[dentista.id]};#{@total_aberto_por_dentista[dentista.id].real};#{@total_iniciado_por_dentista[dentista.id].real};#{percentual}>"
+= link_de_impressao(dados)
