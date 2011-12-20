@@ -8,6 +8,7 @@ class TratamentosController < ApplicationController
     @paciente               = Paciente.find(params[:paciente_id])
     @tratamento             = Tratamento.new(:dentista_id => params[:dentista_id])
     @tratamento.paciente_id = @paciente.id
+    @item = @paciente.tabela.itens_ativos.to_json
     if @paciente.tabela
       @items                = @paciente.tabela.item_tabelas.
         collect{|obj| [obj.codigo + " - " + obj.descricao,obj.id]}.insert(0,"")

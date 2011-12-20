@@ -12,6 +12,8 @@ doc/*.doc
 doc/pendencias/**
 doc/anteriores/*.*
 doc/convertidos/*.*
+doc/*
+
 *.sql
 config/database.yml
 public/javascripts/jsDraw2D/*

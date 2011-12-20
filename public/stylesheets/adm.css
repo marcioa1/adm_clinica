@@ -13,6 +13,9 @@ fieldset{
 .fieldset_60{
     width: 60em;
 }
+.fieldset_55{
+    width: 55em;
+}
 .fieldset_50{
     width: 50em;
 }
@@ -33,7 +36,7 @@ fieldset{
 }
 #estado{
   padding-left: 28em;
-  margin-top: -7.2em;
+  margin-top: -6.7em;
 /*  float :right;*/
 }
 #logo{
@@ -306,8 +309,8 @@ color: #00008B; background-color: #ADD8E6; border: 1px outset #00008B;
 }
 
 #numero_dos_dentes{
-  float :right;
-  padding-bottom: 0.1em;
+  float :left;
+/*  padding-bottom: 0.1em;*/
 }
 
 .debito{

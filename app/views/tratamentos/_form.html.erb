@@ -1,12 +1,12 @@
 <%= javascript_include_tag 'odontograma.js' %>
 <% form_for(@tratamento) do |f| %>
 
-  <%= hidden_field_tag :items, @paciente.tabela.item_tabelas.to_json, :size=>150 %>
+  <%= text_field_tag :items, @item, :size=>150 %>
 
   <%= f.hidden_field :paciente_id %>
   <%= f.error_messages %>
   <div id="numero_dos_dentes">numero dos dentes</div>
-  <div style="padding-top: 7em;">
+  <div style="padding-top: 1em;">
     <%= f.label :dente %> : 
     <%= f.text_field :dente,  :size=> 12, :class=>'txt' %>
   </div>
@@ -30,7 +30,7 @@
   </p>
   <p>
   <div id='estado'>
-    <Fieldset  class='fieldset_30'>
+    <Fieldset  class='fieldset_25'>
       <legend>Estado</legend>
       <table class='transparente'>
         <tr>
@@ -50,7 +50,6 @@
     </fieldset>
   </div>
   </p>
-  <br/>
     <%= f.hidden_field :item_tabela_id, :size=>4%>
   <% if !@tratamento.new_record? %>
     <div>

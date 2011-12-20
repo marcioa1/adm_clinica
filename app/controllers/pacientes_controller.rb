@@ -64,11 +64,7 @@ class PacientesController < ApplicationController
     session[:paciente_id] = nil
     @pacientes = []
     if !params[:codigo].blank?
-      if @clinica_atual.administracao?
-        @pacientes = Paciente.all(:conditions=>["clinica_id < 8 and codigo=?", params[:codigo]], :order=>:nome)
-      else
-        @pacientes = Paciente.all(:conditions=>["clinica_id=? and codigo=?", session[:clinica_id].to_i, params[:codigo].to_i],:order=>:nome)
-      end
+      @pacientes = Paciente.all(:conditions=>["clinica_id=? and codigo=?", session[:clinica_id].to_i, params[:codigo].to_i],:order=>:nome)
       if !@pacientes.empty?
         if @pacientes.size==1
           redirect_to abre_paciente_path(:id=>@pacientes.first.id)
@@ -82,18 +78,10 @@ class PacientesController < ApplicationController
   
   
   def pesquisa_nomes
-    if @clinica_atual.administracao?
-      nomes = Paciente.all(:select=>'nome,clinica_id,id', :conditions=>["clinica_id < 8 and arquivo_morto = ? and nome like ?", false, "#{params[:term]}%" ])  
-    else
-      nomes = Paciente.all(:select=>'nome,clinica_id,id', :conditions=>["arquivo_morto = ? and nome like ? and clinica_id = ? ", false,  "#{params[:term].nome_proprio}%", session[:clinica_id] ])  
-    end
+    nomes = Paciente.all(:select=>'nome,clinica_id,id', :conditions=>["arquivo_morto = ? and nome like ? and clinica_id = ? ", false,  "#{params[:term].nome_proprio}%", session[:clinica_id] ])  
     result = ''
     nomes.each do |pac|
-      if @clinica_atual.administracao?
-        result += "<li><a href='/pacientes/#{pac.id}/abre'>#{pac.nome}</a> , #{Clinica.find(pac.clinica_id).sigla}</li>"
-      else
-        result += "<li><a href='/pacientes/#{pac.id}/abre'>#{pac.nome}</a></li>"
-      end      
+      result += "<li><a href='/pacientes/#{pac.id}/abre'>#{pac.nome}</a></li>"
     end
     render :json => result.to_json
   end

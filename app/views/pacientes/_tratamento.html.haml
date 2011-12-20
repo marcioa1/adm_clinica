@@ -1,8 +1,8 @@
 = javascript_include_tag 'jsDraw2D.js','odontograma.js'
 
 = link_to "Novo procedimento" , new_tratamento_path(:paciente_id=>@paciente.id) 
-  |
-  = link_to "Odontograma", '#', :onclick=>'desenha_odontograma();'
+|
+= link_to "Odontograma", '#', :onclick=>'desenha_odontograma();'
 %br
 %br
 #canvas{:style=> 'display :none;'}
