@@ -20,19 +20,21 @@
     %th{ :width => "190px" }
       %br
       Descrição
-    %th{ :width => "60px" }
+    %th{ :width => "50px" }
       %br
       Valor
-    %th{ :width => "30px" }
+    %th{ :width => "20px" }
+      Desc.
       %br
-      Desconto (%)
-    %th{ :width => "60px" }
+      (%)
+    %th{ :width => "50px" }
+      Valor 
       %br
-      Valor final
-    %th{ :width => "60px" }
+      final
+    %th{ :width => "50px" }
       %br
       Custo
-    %th
+    %th{ :width => "80px" }
       %br
       Dentista
     %th
@@ -43,14 +45,10 @@
       %br
       Orç.
     %th
-      Trabalho de<br/>
+      Trabalho<br/>
       Protético
     %th
-      %br
-      Editar
     %th
-      %br
-      Excluir
     - if current_user.master?
       %th
         &nbsp;
@@ -61,11 +59,7 @@
       %td{ :align => "center" }= tratamento.dente
       %td= tratamento.faces
       %td= tratamento.item_tabela.codigo  unless tratamento.item_tabela.nil?
-      %td
-        - if tratamento.pode_alterar? || tratamento.liberado_para_alteracao?
-          = link_to tratamento.descricao, edit_tratamento_path(tratamento)
-        - else
-          = tratamento.descricao
+      %td= tratamento.descricao
       %td{ :align => "right" }= tratamento.valor.real
       %td{ :align => "right" }= tratamento.desconto
       %td{ :align => "right" }= tratamento.valor_com_desconto.real
@@ -108,7 +102,7 @@
       &nbsp;
     %td{ :align => 'right'}
       = total_com_desconto.real
-    %td{ :colspan => "7" }
+    %td{ :colspan => "8" }
 = link_to "imprime", imprime_tratamento_paciente_path(@paciente)
 - @paciente.orcamentos.each do |o|
   |

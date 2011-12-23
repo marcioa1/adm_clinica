@@ -1,0 +1,24 @@
+- content_for :main do
+  %h3 Produção do dia
+  %table
+    %thead
+      %tr
+        %th{:width=>'170px'} Dentista
+        %th{:width=>'170px'} Paciente
+        %th{:width=>'170px'} Procedimento
+        %th{:width=>'70px'} Valor
+        %th Desc
+        %th{:width=>'70px'} Valor final
+        %th Orçamento
+        %th{:width=>'70px'} Custo
+    %tbody
+      - @producao.each do |t|
+        %tr
+          %td= link_to t.dentista.nome, abre_dentista_path(t.dentista), :target=>:blank
+          %td= link_to t.paciente.nome, abre_paciente_path(t.paciente), :target=>:blank
+          %td= t.descricao
+          %td{:align=>:right}= t.valor.real
+          %td{:align=>:right}= t.desconto
+          %td{:align=>:right}= t.valor_com_desconto.real
+          %td= t.orcamento && t.orcamento.numero
+          %td{:align=>:right}= t.custo.real

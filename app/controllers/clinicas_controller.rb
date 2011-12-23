@@ -17,6 +17,11 @@ class ClinicasController < ApplicationController
     end
   end
   
+  def producao_do_dia
+    @dia      = Date.today
+    @producao = Tratamento.no_dia(@dia).all(:order=>:dentista_id)
+  end
+  
   def producao_entre_datas
     @valores = []
     if params[:datepicker].nil?

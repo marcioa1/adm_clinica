@@ -28,7 +28,6 @@ class PacientesController < ApplicationController
     @paciente                   = Paciente.new(params[:paciente])
     @paciente.nome              = params[:paciente][:nome].nome_proprio
     @paciente.clinica_id        = session[:clinica_id]
-    @paciente.codigo            = @paciente.gera_codigo(session[:clinica_id])
     @paciente.data_da_suspensao_da_cobranca_de_orto = params[:datepicker3].to_date unless params[:datepicker3].blank?
     @paciente.data_da_saida_da_lista_de_debitos     = params[:datepicker4].to_date unless params[:datepicker4].blank?
     if @paciente.save
@@ -192,8 +191,6 @@ class PacientesController < ApplicationController
     paciente                 = Paciente.find(params[:id])
     paciente.clinica_id      = session[:clinica_id]
     paciente.codigo_anterior = paciente.codigo_anterior && paciente.codigo_anterior + '/' + paciente.codigo + "( #{paciente.clinica.nome})"
-    novo_codigo              = paciente.gera_codigo(session[:clinica_id])
-    paciente.codigo          = novo_codigo 
     if paciente.save
       render :json => paciente.nome.to_json
     else

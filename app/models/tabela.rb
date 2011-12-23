@@ -12,7 +12,8 @@ class Tabela < ActiveRecord::Base
   validates_presence_of :nome, :message => "O nome da tabela é obrigatório."
   
   def itens_ativos
-    ItemTabela.all(:order=>"descricao", :conditions=>["tabela_id = ? and ativo = ?", self.id, true])
+    ItemTabela.all(:order=>"descricao", 
+                   :conditions=>["tabela_id = ? and ativo = ?", self.id, true])
   end
   
   def pode_excluir?

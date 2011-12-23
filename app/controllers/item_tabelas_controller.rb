@@ -4,7 +4,7 @@ class ItemTabelasController < ApplicationController
 
   def index
     @tabela       = Tabela.find(params[:tabela_id])
-    @item_tabelas = @tabela.item_tabelas #ItemTabela.all(:conditions=>["tabela_id=?",@tabela.id], :order=>'codigo')
+    @item_tabelas = @tabela.item_tabelas.all(:order => 'descricao') #ItemTabela.all(:conditions=>["tabela_id=?",@tabela.id], :order=>'codigo')
     @item_tabela  = ItemTabela.new(:tabela_id => @tabela.id)
   end
 
@@ -12,15 +12,6 @@ class ItemTabelasController < ApplicationController
     @item_tabela = ItemTabela.find(params[:id])
     @clinicas    = busca_clinicas 
     @preco       = Array.new
-    @clinicas.each do |clinica|
-      preco = Preco.find_by_item_tabela_id_and_clinica_id(@item_tabela.id,
-                  clinica.id)
-      if preco.nil?
-        @preco[clinica.id] = 0
-      else
-        @preco[clinica.id] = preco.preco
-      end
-    end
   end
 
   def new

@@ -1,8 +1,6 @@
 <%= javascript_include_tag 'odontograma.js' %>
 <% form_for(@tratamento) do |f| %>
 
-  <%= text_field_tag :items, @item, :size=>150 %>
-
   <%= f.hidden_field :paciente_id %>
   <%= f.error_messages %>
   <div id="numero_dos_dentes">numero dos dentes</div>
@@ -58,6 +56,8 @@
     </div>
   <% end %>
     <div>
+    </div>
+    <div>
     <%= f.label :procedimento %> : 
     <%= f.text_field :descricao, :size=>"40", :class=>"txt ui-autocomplete-input" %>
   </div>
@@ -88,8 +88,8 @@
     <%= f.select :orcamento_id, @tratamento.paciente.orcamentos.collect{ |o| [ o.numero, o.id]}.insert(0, '') %>
   </div>
   <div>
-    <%= f.submit "salvar e fechar" if (!@tratamento.data || (@tratamento.pode_alterar? || @tratamento.liberado_para_alteracao? )) && current_user.secretaria? %>
-    <%= f.submit "salvar e novo" if (@tratamento.id.nil? && (!@tratamento.data || (@tratamento.data + 15.days > Date.today ))) && current_user.secretaria? %>
+    <%= f.submit "salvar e fechar" if (!@tratamento.data || (@tratamento.pode_alterar? || @tratamento.liberado_para_alteracao? ))  %>
+    <%= f.submit "salvar e novo" if (@tratamento.id.nil? && (!@tratamento.data || (@tratamento.data + 15.days > Date.today )))  %>
 
   </div>
 <% end %>

@@ -19,6 +19,7 @@ class Tratamento < ActiveRecord::Base
   named_scope :feito, :conditions=>["data IS NOT NULL"]
   named_scope :nao_excluido, :conditions=>["excluido = ?",false]
   named_scope :nao_feito, :conditions=>["data IS NULL"]
+  named_scope :no_dia, lambda{|dia| {:conditions=>["data =? ", dia]}}
   named_scope :pacientes_em_tratamento, :conditions => ['data IS NULL'], :group=>'paciente_id', :select=> 'paciente_id'
   named_scope :por_data, :order=>:data
   named_scope :sem_orcamento, :conditions=>["orcamento_id IS NULL"]

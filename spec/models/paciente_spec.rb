@@ -26,12 +26,6 @@ describe Paciente do
     @paciente.tabela != nil
   end
   
-  it "should has a codigo of 2" do
-    pac = Paciente.new
-    pac.codigo = pac.gera_codigo(@clinica.id)
-    pac.codigo.should == 3
-  end
-  
   it "should belongs to tabela Classident" do
     @paciente.tabela.should be == @tabela
   end
